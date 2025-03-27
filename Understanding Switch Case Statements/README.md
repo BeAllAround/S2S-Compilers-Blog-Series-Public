@@ -2361,6 +2361,115 @@ __switch_go
 __switch_go
 ```
 
+Getting the value out of the statement expression while using local labels is a bit tricky but possible:
+
+```c
+#define switch_go(type) ({ \
+    __label__ l01, l02, l03, _default, defer; \
+    static void* jtable[] = { &&l01, &&l02, &&l03 }; \
+    volatile int r; \
+    if((unsigned int)type > 2) goto _default; \
+    goto *jtable[type]; \
+    l01: {\
+       r = 1; \
+       goto defer; \
+    } \
+    l02: {\
+      r = 2; \
+      goto defer; \
+    } \
+    l03: {\
+     r = 3; \
+     goto defer; \
+    } \
+    _default: { \
+      r = 11; \
+      goto defer; \
+    } \
+    defer: { \
+    } \
+    r; \
+})
+```
+
+
+
+##### Computed GOTO: C++ Statement Expression
+
+According to [6.18.1 Statements and Declarations in Expressions](https://gcc.gnu.org/onlinedocs/gcc/Statement-Exprs.html),
+
+_In G++, the result value of a statement expression undergoes array and function pointer decay, and is returned by value to the enclosing expression. For instance, if `A` is a class, then_
+
+```
+        A a;
+
+        ({a;}).Foo ()
+```
+
+_constructs a temporary `A` object to hold the result of the statement expression, and that is used to invoke `Foo`. Therefore the `this` pointer observed by `Foo` is not the address of `a`._
+
+```c++
+class Foo {
+    public:
+        Foo() = default;
+
+
+        Foo(const Foo&) {
+            std::cout << "Foo()::COPY" << std::endl;
+        }
+
+        Foo(Foo&&) {
+            std::cout << "Foo()::MOVE" << std::endl;
+        }
+
+        Foo&operator=(const Foo&) {
+            std::cout << "Foo::operator=()::COPY" << std::endl;
+            return *this;
+        }
+        Foo&operator=(Foo&&) {
+            std::cout << "Foo::operator=()::MOVE" << std::endl;
+            return *this;
+        }
+
+
+};
+
+#define switch_go(type) ({ \
+    __label__ l01, l02, l03, _default, defer; \
+    static void* jtable[] = { &&l01, &&l02, &&l03 }; \
+    Foo r; \
+    if((unsigned int)type > 2) goto _default; \
+    goto *jtable[type]; \
+    l01: {\
+       r = Foo(); \
+       goto defer; \
+    } \
+    l02: {\
+      r = Foo(); \
+      goto defer; \
+    } \
+    l03: {\
+     r = Foo(); \
+     goto defer; \
+    } \
+    _default: { \
+      r = Foo(); \
+      goto defer; \
+    } \
+    defer: { \
+    } \
+    r; \
+})
+
+// Output:
+// ---switch Go---
+// Foo::operator=()::MOVE
+// Foo()::COPY
+// ---switch Go---
+```
+
+
+
 
 
 #### Local Label Concern
