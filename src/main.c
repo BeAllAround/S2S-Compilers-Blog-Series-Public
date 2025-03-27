@@ -394,21 +394,25 @@ void _switch_test(unsigned int type) {
 }
 
 #define __switch_go(type) { \
-    __label__ l00, l01, l02, defer; \
+    __label__ l00, l01, l02, _default, defer; \
     static void* jtable[] = {&&l00, &&l01, &&l02}; \
-    if((unsigned int)type > 2) goto defer; \
+    if((unsigned int)type > 2) goto _default; \
     goto* jtable[type]; \
-    volatile int d; \
+    volatile int r; \
     l00: { \
-        d = 0; \
+        r = 0; \
         goto defer; \
     } \
     l01: { \
-        d = 1; \
+        r = 1; \
         goto defer; \
     } \
     l02: { \
-        d = 2; \
+        r = 2; \
+        goto defer; \
+    } \
+    _default: { \
+        r = 11; \
         goto defer; \
     } \
     defer: { \
