@@ -2197,7 +2197,7 @@ _switch_run
 
 This, however, depends _if_ the compiler is able to `inline` a function.
 
-The fact of the matter is it is possible for the compiler to `inline` the switch case function rather than the computed goto, which is covered in the next section.
+The fact of the matter is it is possible for the compiler to `inline` the switch case function as opposed to the computed goto, which is covered in the next section.
 
 
 
