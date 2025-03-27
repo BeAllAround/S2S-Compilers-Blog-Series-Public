@@ -43,6 +43,7 @@
         - [No Inline](#no-inline)
       - [Inlining Computed GOTO](#inlining-computed-goto)
         - [Switch Go Macro](#switch-go-macro)
+        - [Computed GOTO: C++ Statement Expression](#computed-goto-c-statement-expression)
       - [Local Label Concern](#local-label-concern)
         - [Inlining Switch Case](#inlining-switch-case)
       - [Customizing _switch_go](#customizing-_switch_go)
