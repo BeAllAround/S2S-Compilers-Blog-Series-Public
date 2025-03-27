@@ -2197,7 +2197,7 @@ _switch_run
 
 This, however, depends _if_ the compiler is able to `inline` a function.
 
-The fact of the matter is it is much easier for the compiler to `inline` the switch case function than the computed goto, which is covered in the next section.
+The fact of the matter is it is possible for the compiler to `inline` the switch case function rather than the computed goto, which is covered in the next section.
 
 
 
@@ -2266,7 +2266,31 @@ _switch_go
 
 
 
-The bottom line is It _cannot_ be inlined. Therefore, we have to consider other approaches such as [6.18.2 Locally Declared Labels](https://gcc.gnu.org/onlinedocs/gcc/Local-Labels.html) and [6.18.1 Statements and Declarations in Expressions](https://gcc.gnu.org/onlinedocs/gcc/Statement-Exprs.html) in case we need to get the value out of the nested block scope.
+The bottom line is It _cannot_ be inlined. According to [6.18.3 Labels as Values](https://gcc.gnu.org/onlinedocs/gcc/Labels-as-Values.html),
+
+_The `&&foo` expressions for the same label might have different values if the containing function is inlined or cloned. If a program relies on them being always the same, `__attribute__((__noinline__,__noclone__))` should be used to prevent inlining and cloning. If `&&foo` is used in a static variable initializer, inlining and cloning is forbidden._
+
+We ca verify this by the following code:
+
+```c
+static inline void _switch_go (unsigned int) __attribute__((always_inline));
+```
+
+```bash
+error: function 'void _switch_go(unsigned int)' can never be copied because it saves address of local label in a static variable
+```
+
+```bash
+error: function 'void _switch_go(unsigned int)' can never be inlined because it contains a computed goto
+```
+
+
+
+_Therefore_, we have to consider other approaches such as [6.18.2 Locally Declared Labels](https://gcc.gnu.org/onlinedocs/gcc/Local-Labels.html) and [6.18.1 Statements and Declarations in Expressions](https://gcc.gnu.org/onlinedocs/gcc/Statement-Exprs.html) in case we need to get the value out of the nested block scope.
+
+
+
+##### Switch Go Macro
 
 Let's wrap the [_switch_go](#computed-goto-goto-jump-table-with-labels) inside of the macro with local labels.
 
