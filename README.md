@@ -2217,7 +2217,7 @@ static inline void _switch_go(unsigned int v) {
 
 
 
-After benchmarking this code with the `-O1` to try to inline it.
+After benchmarking this code with the `-O1` to try to `inline` it.
 
 ```c
 int main() {
@@ -2240,7 +2240,7 @@ int main() {
 
 
 
-The performance is, more or less, the same as the function without the `inline` but also added `static` so that makes it a tad faster.
+The performance is, more or less, the same as the function without the `inline` but also added `static` so that makes it a tad faster with `-O1` on (but no difference without any).
 
 ```bash
 _switch_go
