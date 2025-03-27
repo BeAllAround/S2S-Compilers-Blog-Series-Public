@@ -42,6 +42,7 @@
       - [Switch Case with `-O1` optimizations](#switch-case-with--o1-optimizations)
         - [No Inline](#no-inline)
       - [Inlining Computed GOTO](#inlining-computed-goto)
+        - [Switch Go Macro](#switch-go-macro)
       - [Local Label Concern](#local-label-concern)
         - [Inlining Switch Case](#inlining-switch-case)
       - [Customizing _switch_go](#customizing-_switch_go)
