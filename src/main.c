@@ -396,7 +396,7 @@ void _switch_test(unsigned int type) {
 #define __switch_go(type) { \
     __label__ l00, l01, l02, defer; \
     static void* jtable[] = {&&l00, &&l01, &&l02}; \
-    if(type > 2) goto defer; \
+    if((unsigned int)type > 2) goto defer; \
     goto* jtable[type]; \
     volatile int d; \
     l00: { \
@@ -493,6 +493,9 @@ int main() {
 
       end_time;
     }
+    // __switch_go(value3);
+    // __switch_go(value3);
+
     printf("__switch_go\n");
   }
 
