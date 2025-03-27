@@ -42,7 +42,7 @@
       - [Switch Case with `-O1` optimizations](#switch-case-with--o1-optimizations)
         - [No Inline](#no-inline)
       - [Inlining Computed GOTO](#inlining-computed-goto)
-      - [Local Label Problem](#local-label-problem)
+      - [Local Label Concern](#local-label-concern)
         - [Inlining Switch Case](#inlining-switch-case)
       - [Customizing _switch_go](#customizing-_switch_go)
         - [Benchmark](#benchmark)
@@ -2334,11 +2334,11 @@ __switch_go
 
 
 
-#### Local Label Problem
+#### Local Label Concern
 
 _Local_ Labels, as the name suggests, are local. Meaning that a jump table is generated per individual block - each time we use our macro. The code above generates one jump table since we are in the loop.
 
-The following isn't ideal unless we have a particular use case for it.
+The following isn't ideal unless we have a particular use case for it. For example, using it in extensive loops or function calls is a great trade-off.
 
 ```c
 int main() {
@@ -2373,6 +2373,8 @@ A similar thing occurs when `inlining` the switch case. When the compiler finds 
 > 🚧 Note
 >
 > In the case of the `__switch_go` macro, we are _forcing_ the creation of a jump table each time since we are _explicitly_ using local labels whereas with the `switch` case inlining - the compiler makes a better decision and doesn't waste the static storage with jump tables at all times.
+>
+> However, as mentioned if we use the `__switch_go` only when we need to - it _is_ a great trade-off.
 
 Consider the following code.
 
