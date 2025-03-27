@@ -420,6 +420,54 @@ void _switch_test(unsigned int type) {
     } \
     }
 
+/*
+#define switch_go(type) ({ \
+    __label__ l01, l02, l03, _default, defer; \
+    static void* jtable[] = { &&l01, &&l02, &&l03 }; \
+    volatile int r; \
+    if((unsigned int)type > 2) goto _default; \
+    goto *jtable[type]; \
+    l01: {\
+       r = 1; \
+       goto defer; \
+    } \
+    l02: {\
+      r = 2; \
+      goto defer; \
+    } \
+    l03: {\
+     r = 3; \
+     goto defer; \
+    } \
+    _default: { \
+      r = 11; \
+      goto defer; \
+    } \
+    defer: { \
+    } \
+    r; \
+})
+
+
+int main() {
+    volatile unsigned int value = 10;
+
+    printf("%d\n", switch_go(20));
+
+    printf("%d\n", switch_go(2));
+
+    printf("%d\n", switch_go(0));
+
+    printf("%d\n", switch_go(1));
+
+    printf("%d\n", switch_go(1));
+
+    printf("%d\n", switch_go(value));
+
+    return 0;
+}
+*/
+
 int main() {
 
   volatile unsigned int value = 10;
