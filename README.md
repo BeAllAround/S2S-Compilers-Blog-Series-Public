@@ -2178,7 +2178,7 @@ _switch_run
 
 ##### No Inline
 
-Without `inline`, we get a better optimization similar to the [_switch_go](#with--o1-optimizations).
+Without `inline`, we get the performance similar to the [_switch_go](#with--o1-optimizations).
 
 ```bash
 _switch_run
