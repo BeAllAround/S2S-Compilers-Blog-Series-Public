@@ -83,6 +83,9 @@ void _switch_enum_run(enum N type) {
 
 }
 
+
+void _switch_run(unsigned int);
+
 inline void _switch_run(unsigned int type) {
 
   volatile int r; // NOTE: preventing compiler from optimizing it out
