@@ -83,7 +83,7 @@ void _switch_enum_run(enum N type) {
 
 }
 
-void _switch_run(unsigned int type) {
+inline void _switch_run(unsigned int type) {
 
   volatile int r; // NOTE: preventing compiler from optimizing it out
 
@@ -180,7 +180,7 @@ r = 11;
  */
 
 
-void _switch_go(unsigned int v) {
+static inline void _switch_go(unsigned int v) {
 
   // As mentioned before, we keep the array preserved between function invocations.
   static void* cases[] = {
@@ -390,12 +390,34 @@ void _switch_test(unsigned int type) {
   }
 }
 
+#define __switch_go(type) { \
+    __label__ l00, l01, l02, defer; \
+    static void* jtable[] = {&&l00, &&l01, &&l02}; \
+    if(type > 2) goto defer; \
+    goto* jtable[type]; \
+    volatile int d; \
+    l00: { \
+        d = 0; \
+        goto defer; \
+    } \
+    l01: { \
+        d = 1; \
+        goto defer; \
+    } \
+    l02: { \
+        d = 2; \
+        goto defer; \
+    } \
+    defer: { \
+    } \
+    }
 
 int main() {
 
-  unsigned int value = 10;
-  unsigned int value1 = 11;
-  unsigned int value2 = 0;
+  volatile unsigned int value = 10;
+  volatile unsigned int value1 = 11;
+  volatile unsigned int value2 = 0;
+  volatile unsigned int value3 = 2;
 
   {
     printf("_switch_enum\n");
@@ -423,6 +445,9 @@ int main() {
 
       end_time;
     }
+    // _switch_run(value);
+    // _switch_run(value);
+    // _switch_run(value);
     printf("_switch_run\n");
   }
 
@@ -446,12 +471,26 @@ int main() {
       start_time;
 
       for(int i = 0; i < 1000000; i++) {
-        _switch_go(VV10);
+        _switch_go(value);
       }
 
       end_time;
     }
     printf("_switch_go\n");
+  }
+
+  {
+    printf("__switch_go\n");
+    for(int i = 0; i < 10; i++) {
+      start_time;
+
+      for(int i = 0; i < 1000000; i++) {
+        __switch_go(value3);
+      }
+
+      end_time;
+    }
+    printf("__switch_go\n");
   }
 
   {
