@@ -2265,11 +2265,15 @@ _switch_go
         call    clock
 ```
 
+The bottom line is It _cannot_ be inlined.
 
 
-The bottom line is It _cannot_ be inlined. According to [6.18.3 Labels as Values](https://gcc.gnu.org/onlinedocs/gcc/Labels-as-Values.html),
+
+According to [6.18.3 Labels as Values](https://gcc.gnu.org/onlinedocs/gcc/Labels-as-Values.html),
 
 _The `&&foo` expressions for the same label might have different values if the containing function is inlined or cloned. If a program relies on them being always the same, `__attribute__((__noinline__,__noclone__))` should be used to prevent inlining and cloning. If `&&foo` is used in a static variable initializer, inlining and cloning is forbidden._
+
+
 
 We ca verify this by the following code:
 
