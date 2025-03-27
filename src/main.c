@@ -184,6 +184,7 @@ r = 11;
 
 
 static inline void _switch_go(unsigned int v) {
+  // __label__ l00, l01, l02, l03, l04, l05, l06, l07, l08, l09, l10, _default, defer;
 
   // As mentioned before, we keep the array preserved between function invocations.
   static void* cases[] = {
