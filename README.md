@@ -1095,7 +1095,7 @@ From this, we can conclude that using a jump table for as few as 1, 2, or 3 valu
 
 ## Is there a limit for the values of a switch case?
 
-Since a jump table is basically an array on stack, there should be some limit of how many values we can pack into that jump table.
+Since a jump table is basically a static array, there should be some limit of how many values we can pack into that jump table.
 
 There is no particular way to _explicitly_ test when the jump table isn't used in case there are thousands upon thousands of cases - **_unless_** we want to torture our computer and buy a new one any time soon so we can use a script like this.
 
@@ -2217,7 +2217,7 @@ static inline void _switch_go(unsigned int v) {
 
 
 
-After benchmarking this code with the `-O1` to try to `inline` it.
+After benchmarking this code with the `-O1` to try to `inline` it, the performance is, more or less, the same as the function without the `inline` but also added `static` so that makes it a tad faster with `-O1` on (but no difference without any).
 
 ```c
 int main() {
@@ -2237,10 +2237,6 @@ int main() {
   }
 }
 ```
-
-
-
-The performance is, more or less, the same as the function without the `inline` but also added `static` so that makes it a tad faster with `-O1` on (but no difference without any).
 
 ```bash
 _switch_go
@@ -2376,7 +2372,7 @@ A similar thing occurs when `inlining` the switch case. When the compiler finds 
 
 > 🚧 Note
 >
-> In the case of the `__switch_go` macro, we are _forcing_ the creation of a jump table each time since we are _explicitly_ using local labels.
+> In the case of the `__switch_go` macro, we are _forcing_ the creation of a jump table each time since we are _explicitly_ using local labels whereas with the `switch` case inlining - the compiler makes a better decision and doesn't waste the static storage with jump tables at all times.
 
 Consider the following code.
 
