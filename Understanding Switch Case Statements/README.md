@@ -2691,7 +2691,7 @@ _switch_go:
 
 ##### Benchmark
 
-The benchmark, with the `CMP` instruction, gives us about `22%` faster code with _no_ optimizations.
+The benchmark, without the `CMP` instruction, gives us about `22%` faster code with _no_ optimizations.
 
 ```bash
 _switch_go
