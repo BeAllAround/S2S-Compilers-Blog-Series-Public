@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 #define start_time clock_t s_t_a_r_t = clock();
@@ -398,7 +399,7 @@ void _switch_test(unsigned int type) {
     __label__ l00, l01, l02, _default, defer; \
     static void* jtable[] = {&&l00, &&l01, &&l02}; \
     if((unsigned int)type > 2) goto _default; \
-    goto* jtable[type]; \
+    goto *jtable[type]; \
     volatile int r; \
     l00: { \
         r = 0; \
@@ -469,10 +470,12 @@ int main() {
 */
 
 int main() {
+  srand(time(0));
 
   volatile unsigned int value = 10;
   volatile unsigned int value1 = 11;
   volatile unsigned int value2 = 0;
+  volatile unsigned int value4 = 1;
   volatile unsigned int value3 = 2;
 
   {
@@ -496,6 +499,7 @@ int main() {
       start_time;
     
       for(int i = 0; i < 1000000; i++) {
+        // unsigned int v = rand() % 3;
         _switch_run(value);
       }
 
@@ -541,6 +545,7 @@ int main() {
       start_time;
 
       for(int i = 0; i < 1000000; i++) {
+        // unsigned int v = rand() % 3;
         __switch_go(value3);
       }
 
