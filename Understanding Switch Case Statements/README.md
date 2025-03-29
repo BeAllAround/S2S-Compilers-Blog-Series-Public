@@ -2712,7 +2712,7 @@ _switch_go
 
 > 🚧 Warning
 >
-> Removing the `if` statement and `CMP` is more performant but the cost on the programmer's side of things is that the programmer has to make their code very strict with covering all the possible values and cases since this eliminates the `default` case. Note that if the subscript is out of bounds - the programmer **_is_** going to end up with `Segmentation fault (core dumped)` at runtime.
+> Removing the `if` statement and `CMP` is more performant but the cost on the programmer's side of things is that the programmer has to make their code very strict with covering all the possible values and cases since this eliminates the `default` case. Note that if the subscript is out of bounds - the programmer **_is_** going to end up with `Segmentation fault (core dumped)` at runtime. All in all, this can lead to _[premature optimization](https://wiki.c2.com/?PrematureOptimization)_.
 >
 > Here is the exact log from `valgrind`, showing that the program _cannot_ jump to the invalid address.
 >
