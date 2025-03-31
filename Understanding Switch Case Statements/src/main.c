@@ -469,6 +469,15 @@ int main() {
 }
 */
 
+/*
+// size --common -t out.out
+// bss
+static int n0;
+static int n1;
+static int n2;
+static int n3;
+*/
+
 int main() {
   srand(time(0));
 
@@ -570,6 +579,13 @@ int main() {
     }
     printf("func_pointer_jump_table\n");
   }
+
+  /*
+  printf("%d\n", n0);
+  printf("%d\n", n1);
+  printf("%d\n", n2);
+  printf("%d\n", n3);
+  */
 
 
   return 0;
