@@ -2157,8 +2157,7 @@ _switch_go
 If we inline the `_switch_run` and optimize it with `-O1`, we are able to spot the significance.
 
 ```c
-void _switch_run(unsigned int); // Declaration for when the function cannot be inlined
-inline void _switch_run(unsigned int type) {
+static inline void _switch_run(unsigned int type) {
     /* ... */
 }
 ```
