@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <assert.h>
 
 #define start_time clock_t s_t_a_r_t = clock();
 #define end_time printf("[CPU Time Used: %f]\n", (double)(clock() -          s_t_a_r_t) / CLOCKS_PER_SEC);
@@ -85,9 +86,7 @@ void _switch_enum_run(enum N type) {
 }
 
 
-void _switch_run(unsigned int);
-
-inline void _switch_run(unsigned int type) {
+static inline void _switch_run(unsigned int type) {
 
   volatile int r; // NOTE: preventing compiler from optimizing it out
 
