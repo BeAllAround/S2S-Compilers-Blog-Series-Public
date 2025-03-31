@@ -2513,7 +2513,7 @@ A similar thing occurs when `inlining` the switch case. When the compiler finds 
 
 > 🚧 Note
 >
-> In the case of the `__switch_go` macro, we are _forcing_ the creation of a jump table each time since we are _explicitly_ using local labels whereas with the `switch` case inlining - the compiler makes a better decision and doesn't waste the [data segment](https://en.wikipedia.org/wiki/Data_segment) with jump tables at all times. This is particularly signification if the jump table is very large.
+> In the case of the `__switch_go` macro, we are _forcing_ the creation of a jump table each time since we are _explicitly_ using local labels whereas with the `switch` case inlining - the compiler makes a better decision and doesn't waste the [data segment](https://en.wikipedia.org/wiki/Data_segment) memory with jump tables at all times. This is particularly signification if the jump table is very large.
 >
 > However, as mentioned if we use the `__switch_go` only when we need to - it _is_ a great trade-off.
 
