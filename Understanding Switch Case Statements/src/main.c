@@ -470,6 +470,8 @@ int main() {
 */
 
 /*
+// objdump -s out.out | grep .data
+// readelf -a out.out | grep .bss
 // size --common -t out.out
 // bss
 static int n0;
