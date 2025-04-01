@@ -2291,7 +2291,46 @@ error: function 'void _switch_go(unsigned int)' can never be copied because it s
 error: function 'void _switch_go(unsigned int)' can never be inlined because it contains a computed goto
 ```
 
+The best option here would be to add `-Winline` to the gcc compilation command.
 
+According to [Using the GNU Compiler Collection | 3.9 Options to Request or Suppress Warnings](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Winline),
+
+`-Winline`
+
+- _Warn if a function that is declared as inline cannot be inlined. Even with this
+  option, the compiler does not warn about failures to inline functions declared
+  in system headers._ _The compiler uses a variety of heuristics to determine whether or not to inline a
+  function. For example, the compiler takes into account the size of the function
+  being inlined and the amount of inlining that has already been done in the cur-
+  rent function. Therefore, seemingly insignificant changes in the source program
+  can cause the warnings produced by ‘-Winline’ to appear or disappear._
+
+```bash
+gcc src/main.cpp -g -o output.s -masm=intel -fverbose-asm -S -O1 -Winline
+```
+
+```bash
+
+<source>: In function 'void _switch_go(unsigned int)':
+<source>:191:20: warning: function 'void _switch_go(unsigned int)' can never be copied because it saves address of local label in a static variable [-Winline]
+  191 | static inline void _switch_go(unsigned int v) {
+      |                    ^~~~~~~~~~
+<source>: In function 'int main()':
+<source>:191:20: warning: inlining failed in call to 'void _switch_go(unsigned int)': function not inlinable [-Winline]
+<source>:549:19: note: called from here
+  549 |         _switch_go(value);
+      |         ~~~~~~~~~~^~~~~~~
+ASM generation compiler returned: 0
+<source>: In function 'void _switch_go(unsigned int)':
+<source>:191:20: warning: function 'void _switch_go(unsigned int)' can never be copied because it saves address of local label in a static variable [-Winline]
+  191 | static inline void _switch_go(unsigned int v) {
+      |                    ^~~~~~~~~~
+<source>: In function 'int main()':
+<source>:191:20: warning: inlining failed in call to 'void _switch_go(unsigned int)': function not inlinable [-Winline]
+<source>:549:19: note: called from here
+  549 |         _switch_go(value);
+      |         ~~~~~~~~~~^~~~~~~
+```
 
 _Therefore_, we have to consider other approaches such as [6.18.2 Locally Declared Labels](https://gcc.gnu.org/onlinedocs/gcc/Local-Labels.html) and [6.18.1 Statements and Declarations in Expressions](https://gcc.gnu.org/onlinedocs/gcc/Statement-Exprs.html) in case we need to get the value out of the nested block scope.
 
@@ -2512,7 +2551,7 @@ A similar thing occurs when `inlining` the switch case. When the compiler finds 
 
 > 🚧 Note
 >
-> In the case of the `__switch_go` macro, we are _forcing_ the creation of a jump table each time since we are _explicitly_ using local labels whereas with the `switch` case inlining - the compiler makes a better decision and doesn't waste the [data segment](https://en.wikipedia.org/wiki/Data_segment) memory with jump tables at all times. This is particularly significant if the jump table is very large.
+> In the case of the `__switch_go` macro, we are _forcing_ the creation of a jump table each time since we are _explicitly_ using local labels whereas with the `switch` case inlining - the compiler makes a better decision and doesn't waste the [data segment](https://en.wikipedia.org/wiki/Data_segment) memory with jump tables at all times. This is particularly significant if the jump table is very large. As noted above, we can always track this with the [-Winline](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Winline) option.
 >
 > However, as mentioned if we use the `__switch_go` only when we need to - it _is_ a great trade-off.
 
@@ -2596,6 +2635,23 @@ _switch_run:
         mov     edi, OFFSET FLAT:.LC4
         call    puts
         mov     ebp, 10
+```
+
+Compiler output with `-Winline`:
+
+```bash
+<source>: In function 'int main()':
+<source>:94:20: warning: inlining failed in call to 'void _switch_run(unsigned int)': call is unlikely and code size would grow [-Winline]
+   94 | static inline void _switch_run(unsigned int type) {
+      |                    ^~~~~~~~~~~
+<source>:525:16: note: called from here
+  525 |     _switch_run(value);
+      |     ~~~~~~~~~~~^~~~~~~
+<source>:94:20: warning: inlining failed in call to 'void _switch_run(unsigned int)': call is unlikely and code size would grow [-Winline]
+   94 | static inline void _switch_run(unsigned int type) {
+      |                    ^~~~~~~~~~~
+<source>:524:16: note: called from here
+  524 |     _switch_run(value);
 ```
 
 
