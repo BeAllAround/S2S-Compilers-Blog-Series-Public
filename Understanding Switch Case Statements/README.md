@@ -2644,17 +2644,42 @@ Compiler output with `-Winline`:
 <source>:94:20: warning: inlining failed in call to 'void _switch_run(unsigned int)': call is unlikely and code size would grow [-Winline]
    94 | static inline void _switch_run(unsigned int type) {
       |                    ^~~~~~~~~~~
-<source>:525:16: note: called from here
-  525 |     _switch_run(value);
-      |     ~~~~~~~~~~~^~~~~~~
+<source>:527:18: note: called from here
+  527 |       _switch_run(value);
+      |       ~~~~~~~~~~~^~~~~~~
 <source>:94:20: warning: inlining failed in call to 'void _switch_run(unsigned int)': call is unlikely and code size would grow [-Winline]
    94 | static inline void _switch_run(unsigned int type) {
       |                    ^~~~~~~~~~~
-<source>:524:16: note: called from here
-  524 |     _switch_run(value);
+<source>:526:18: note: called from here
+  526 |       _switch_run(value);
+      |       ~~~~~~~~~~~^~~~~~~
+<source>:94:20: warning: inlining failed in call to 'void _switch_run(unsigned int)': call is unlikely and code size would grow [-Winline]
+   94 | static inline void _switch_run(unsigned int type) {
+      |                    ^~~~~~~~~~~
+<source>:525:22: note: called from here
+  525 |           _switch_run(value);
+      |           ~~~~~~~~~~~^~~~~~~
+ASM generation compiler returned: 0
+<source>: In function 'int main()':
+<source>:94:20: warning: inlining failed in call to 'void _switch_run(unsigned int)': call is unlikely and code size would grow [-Winline]
+   94 | static inline void _switch_run(unsigned int type) {
+      |                    ^~~~~~~~~~~
+<source>:527:18: note: called from here
+  527 |       _switch_run(value);
+      |       ~~~~~~~~~~~^~~~~~~
+<source>:94:20: warning: inlining failed in call to 'void _switch_run(unsigned int)': call is unlikely and code size would grow [-Winline]
+   94 | static inline void _switch_run(unsigned int type) {
+      |                    ^~~~~~~~~~~
+<source>:526:18: note: called from here
+  526 |       _switch_run(value);
+      |       ~~~~~~~~~~~^~~~~~~
+<source>:94:20: warning: inlining failed in call to 'void _switch_run(unsigned int)': call is unlikely and code size would grow [-Winline]
+   94 | static inline void _switch_run(unsigned int type) {
+      |                    ^~~~~~~~~~~
+<source>:525:22: note: called from here
+  525 |           _switch_run(value);
+      |           ~~~~~~~~~~~^~~~~~~
 ```
-
-
 
 
 
