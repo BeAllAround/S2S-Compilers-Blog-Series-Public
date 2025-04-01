@@ -2196,7 +2196,7 @@ _switch_run
 _switch_run
 ```
 
-This, however, depends _if_ the compiler is able to `inline` a function.
+This, however, depends _if_ the compiler is able to `inline` a function. See [-Winline](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Winline).
 
 The fact of the matter is it is possible for the compiler to `inline` the switch case function as opposed to the computed goto, which is covered in the next section.
 
@@ -2402,6 +2402,10 @@ __switch_go
 __switch_go
 ```
 
+> We get the same performance as [inlining switch case](#switch-case-with--o1-optimizations) _because_ [An Inline Function is As Fast As a Macro](https://gcc.gnu.org/onlinedocs/gcc/Inline.html).
+
+
+
 Getting the value out of the statement expression while using local labels is a bit tricky but possible:
 
 ```c
@@ -2547,7 +2551,7 @@ jtable.3:
 
 ##### Inlining Switch Case
 
-A similar thing occurs when `inlining` the switch case. When the compiler finds inappropriate to `inline` the switch case (and, thus, creating another jump table), it replaces it with the `CALL` instruction.
+The same assembly code is generated when `inlining` the switch case. When the compiler finds inappropriate to `inline` the switch case (and, thus, creating another jump table), it replaces it with the `CALL` instruction.
 
 > 🚧 Note
 >
@@ -2973,6 +2977,8 @@ Thank you for reading! Feel free to leave any feedback in the comments!
 - https://gcc.gnu.org/onlinedocs/gcc
 - https://gcc.gnu.org/onlinedocs/gcc/Code-Gen-Options.html
 - https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html#Options-That-Control-Optimization
+- https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html
+- https://gcc.gnu.org/onlinedocs/gcc/Inline.html
 - https://www.gnu.org/software/c-intro-and-ref/manual/html_node/switch-Statement.html
 - https://gcc.gnu.org/onlinedocs/gcc/Labels-as-Values.html
 - https://gcc.gnu.org/onlinedocs/gcc/Statements-implementation.html#Statements-implementation
