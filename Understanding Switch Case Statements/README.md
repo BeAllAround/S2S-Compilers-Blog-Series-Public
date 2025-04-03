@@ -111,7 +111,7 @@ The source code of this blog is all in one file, at the [Github repository](http
 
 ### Background
 
-This blog is intended for C/C++ programmers who have the essential knowledge of assembly. However, if you haven't had any experience of assembly before, read on and see how you get on!
+This blog is intended for C/C++ programmers who have the essential knowledge of assembly. Nonetheless, if you haven't had any experience of assembly before, read on and see how you get on!
 
 ### GCC Options
 
@@ -335,7 +335,9 @@ _cmp:
 
 
 
-In the assembly output of the C high-level code, we can see that for each statement the GCC compiler uses `CMP`, which is of course `O(1)` in the best case given that we match the first condition. However, if none match - the point to get to `else` equates to the time complexity of `O(n)` being the worst case. The average time complexity would _really_ depend on what the code does and how frequently the value to compare proceeds further into the statement, which means more `CMP`s before the condition is met.
+In the assembly output of the C high-level code, we can see that for each statement the GCC compiler uses `CMP`, which is of course `O(1)` in the best case given that we match the first condition.
+
+On the other hand, if none match - the point to get to `else` equates to the time complexity of `O(n)` being the worst case. The average time complexity would _really_ depend on what the code does and how frequently the value to compare proceeds further into the statement, which means more `CMP`s before the condition is met.
 
 This is where the `switch case` comes in to save the day with the average time complexity of `O(1)` but we have to _make sure_ that the switch case is optimized _into_ a jump table, which we cover in the next section.
 
@@ -1407,7 +1409,7 @@ _switch_unpacked:
 
 If we think more and more about the case of "Using the non-packed values", the compiler cannot keep using the `CMP` instructions in the ranges such as `[0, 1, 2, 3, 4, 5, 100, 101, 102, 103, 104, 105]`. We can deduce that there are actually two sets of packed values there: `0...5` and `100...105`.
 
-However, because they are two entirely separate sets, there must be an additional `CMP` instruction between them to check the out-of-bounds ranges and whether to jump to the `default` case.
+Because they are two entirely separate sets, there must be an additional `CMP` instruction between them to check the out-of-bounds ranges and whether to jump to the `default` case.
 
 Let's back up our thinking in the following example.
 
@@ -2557,7 +2559,7 @@ The same assembly code is generated when `inlining` the switch case. When the co
 >
 > In the case of the `__switch_go` macro, we are _forcing_ the creation of a jump table each time since we are _explicitly_ using local labels whereas with the `switch` case inlining - the compiler makes a better decision and doesn't waste the [data segment](https://en.wikipedia.org/wiki/Data_segment) memory with jump tables at all times. This is particularly significant if the jump table is very large. As noted above, we can always track this with the [-Winline](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Winline) option.
 >
-> However, as mentioned if we use the `__switch_go` only when we need to - it _is_ a great trade-off.
+> Nevertheless, as mentioned if we use the `__switch_go` only when we need to - it _is_ a great trade-off.
 
 Consider the following code.
 
