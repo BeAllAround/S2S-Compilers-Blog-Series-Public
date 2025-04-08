@@ -31,6 +31,8 @@
   - [Breaking switch case: Non-packed values](#breaking-switch-case-non-packed-values)
   - [Multiple Jump Tables](#multiple-jump-tables)
   - [If-else as a jump table](#if-else-as-a-jump-table)
+    - [If-else with logical || operator as a jump table](#if-else-with-logical--operator-as-a-jump-table)
+  
   - [Implementing Switch Case](#implementing-switch-case)
     - [Jump Table with function pointers](#jump-table-with-function-pointers)
       - [Implementation](#implementation)
@@ -1671,6 +1673,112 @@ _if_run:
 ```
 
 In my opinion, this optimization may be overkill if you are an old-school person who looks at their assembly after compiling this and saying, "Wait! I didn't use a switch case. Why is there a jump table?". For that reason, we must always stay up-to-date with the features of [GCC](https://gcc.gnu.org/).
+
+
+
+### If-else with logical || operator as a jump table
+
+If appropriate, the compiler goes as far as to turn a series of logical OR operators of an if-else statement into a jump table given that is uses the equal-to operators. From the assembly output, the way it is able to accomplish that is it looks at it as a switch case with the following:
+
+```c
+case 0: case 1: case 2: case 3: case 4: case 5: case 6: ...
+```
+
+So the following if-else case _is_ turned into a jump table with the `-01` optimizations.
+
+```c
+void _run_if(unsigned int type) {
+    volatile int v;
+    if(type == 1 || type == 2 || type == 3  || type == 4 || type == 5 || type == 6 || type == 7){
+        v = 1;
+    } else if(type == 8 || type == 9 || type == 10) {
+        v = 2;
+    } else if(type == 11) {
+        v = 3;
+    } else if(type == 12) {
+        v = 4;
+    } else if(type == 13) {
+        v = 5;
+    } else {
+        v = 11;
+    }
+}
+```
+
+Assembly output code:
+
+```assembly
+_run_if(unsigned int):
+        cmp     edi, 13
+        ja      .L2
+        mov     edi, edi
+        jmp     [QWORD PTR .L4[0+rdi*8]]
+.L4:
+        .quad   .L2
+        .quad   .L8
+        .quad   .L8
+        .quad   .L8
+        .quad   .L8
+        .quad   .L8
+        .quad   .L8
+        .quad   .L8
+        .quad   .L7
+        .quad   .L7
+        .quad   .L7
+        .quad   .L6
+        .quad   .L5
+        .quad   .L3
+.L8:
+        mov     DWORD PTR [rsp-4], 1
+        ret
+.L7:
+        mov     DWORD PTR [rsp-4], 2
+        ret
+.L6:
+        mov     DWORD PTR [rsp-4], 3
+        ret
+.L5:
+        mov     DWORD PTR [rsp-4], 4
+        ret
+.L3:
+        mov     DWORD PTR [rsp-4], 5
+        ret
+.L2:
+        mov     DWORD PTR [rsp-4], 11
+        ret
+```
+
+
+
+We can even force turning the following into a jump table with:
+
+```bash
+-O1 --param case-values-threshold=1
+```
+
+
+
+> 🚧 Note
+>
+> Generally speaking, the programmer should use the `--param case-values-threshold=1` parameter carefully and for a good reason since it applies to all of your code.
+>
+> This parameter was previously covered in the [Turning a switch case into a jump table](#turning-a-switch-case-into-a-jump-table) section.
+
+
+```c
+void _run_if(unsigned int type) {
+    volatile int v;
+    if(type == 1 || type == 2 || type == 3  || type == 4 || type == 5 || type == 6 || type == 7){
+        v = 1;
+    } else if(type == 8 || type == 9 || type == 10) {
+        v = 2;
+    } else {
+        v = 11;
+    }
+}
+```
+
+
 
 
 
