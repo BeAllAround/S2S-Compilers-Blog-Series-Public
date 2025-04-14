@@ -1676,6 +1676,24 @@ In my opinion, this optimization may be overkill if you are an old-school person
 
 
 
+> 📘 **optimize (level, …)**
+>
+> _Optimally in some cases_, we can also declare a certain function to be level-1-optimized so that there is a clear indication in our code that the function is optimized, leaving the rest of the code with no extra optimizations _if not needed_.
+>
+> ```c
+> void _if_run (unsigned int) __attribute__ ((optimize (1)));
+> ```
+>
+> Even without `-O1`, our function is _selectively_ optimized.
+>
+> ```bash
+> gcc src/main.cpp -g -o output.s -masm=intel -fverbose-asm -S
+> ```
+>
+> For more, see [6.4.1.1 Common Function Attributes | optimize (level, …)](https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-optimize-function-attribute).
+
+
+
 ### If-else with logical || operator as a jump table
 
 If appropriate, the compiler goes as far as to turn a series of logical OR operators of an if-else statement into a jump table given that is uses the equal-to operators. From the assembly output, the way it is able to accomplish that is it looks at it as a switch case with the following:
@@ -3089,6 +3107,7 @@ Thank you for reading! Feel free to leave any feedback in the comments!
 - https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html#Options-That-Control-Optimization
 - https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html
 - https://gcc.gnu.org/onlinedocs/gcc/Inline.html
+- https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html
 - https://www.gnu.org/software/c-intro-and-ref/manual/html_node/switch-Statement.html
 - https://gcc.gnu.org/onlinedocs/gcc/Labels-as-Values.html
 - https://gcc.gnu.org/onlinedocs/gcc/Statements-implementation.html#Statements-implementation
