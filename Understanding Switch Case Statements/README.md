@@ -1678,7 +1678,7 @@ In my opinion, this optimization may be overkill if you are an old-school person
 
 > 📘 **optimize (level, …)**
 >
-> _Optimally in some cases_, we can also declare a certain function to be level-1-optimized so that there is a clear indication in our code that the function is optimized, leaving the rest of the code with no extra optimizations _if not needed_.
+> _Optimally in some cases_, we can also declare a certain function to be level-1-optimized so that there is a clear indication in our code that the function is optimized, leaving the rest of the code with no extra optimizations _if not needed_. This attribute is especially effective for faster compilation times.
 >
 > ```c
 > void _if_run (unsigned int) __attribute__ ((optimize (1)));
