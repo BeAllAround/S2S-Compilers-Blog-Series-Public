@@ -145,7 +145,7 @@ static inline void _switch_run(unsigned int type) {
 
 
 
-// static inline void _if_run(unsigned int type);
+// static inline void _if_run(unsigned int);
 
 void _if_run(unsigned int type) {
 
