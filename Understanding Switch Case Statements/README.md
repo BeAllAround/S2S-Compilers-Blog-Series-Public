@@ -247,7 +247,7 @@ The following is the `if-else` chain of statements comparing the unsigned intege
 
 > 📘 Note
 >
-> In the examples like this, we use the `volatile` keyword in order to prevent the compiler from eliminating our code in some cases where the `-O1` (level-1), `-O2` (level-2) or `-O3` (level-3) optimizations are added, which is a collection of optimization flags for the C/C++ code. For more information, see [Using the GNU Compiler Collection | 3.12 Options That Control Optimization](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html#Options-That-Control-Optimization).
+> In the examples like this, we use the `volatile` keyword in order to prevent the compiler from eliminating our code in some cases where the `-O1` (level-1), `-O2` (level-2) or `-O3` (level-3) optimizations are added, which is a set/collection of optimization flags for the C/C++ code. For more information, see [Using the GNU Compiler Collection | 3.12 Options That Control Optimization](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html#Options-That-Control-Optimization).
 >
 > We are not going to go into too much details on these flags in this blog particularly due to the fact that _even if individual flags are specified, most optimizations are completely disabled if an `-O` level is not set_. Thereby, it is much harder to see under the hood of these gcc optimizations and is entirely another discussion for another day.
 
@@ -1112,7 +1112,6 @@ enum class Value {
 void _iterate(Value type) {
     if(type != Value::Iterator) {
         throw std::runtime_error("not an iterator");
-        // return 1;
     }
     /* Handle the iterator instance */
     return; 
