@@ -1097,7 +1097,7 @@ _switch_test:
 
 From this, we can conclude that using a jump table for as few as 1, 2, or 3 values _is_ redundant and rather impractical at the same time.
 
-For example, the following code is pragmatically and assembly-wise much effective since there is simply `CMP` and `JE` and it doesn't abuse the data segment in the case of inlining the same function. For more on the latter, see [Inlining Switch Case](#inlining-switch-case).
+For example, the following code is pragmatically and assembly-wise much more effective since there is simply `CMP` and `JE` and it doesn't abuse the data segment in the case of inlining the same function. For more on the latter, see [Inlining Switch Case](#inlining-switch-case).
 
 ```c++
 enum class Value {
