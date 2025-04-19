@@ -247,9 +247,9 @@ The following is the `if-else` chain of statements comparing the unsigned intege
 
 > 📘 Note
 >
-> In the examples like this, we use the `volatile` keyword in order to prevent the compiler from eliminating our code in some cases where the `-O3` or `-O2` optimizations are added, which is a collection of optimization flags for the C/C++ code. For more information, see [Using the GNU Compiler Collection | 3.12 Options That Control Optimization](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html#Options-That-Control-Optimization).
+> In the examples like this, we use the `volatile` keyword in order to prevent the compiler from eliminating our code in some cases where the `-O1` (level-1), `-O2` (level-2) or `-O3` (level-3) optimizations are added, which is a collection of optimization flags for the C/C++ code. For more information, see [Using the GNU Compiler Collection | 3.12 Options That Control Optimization](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html#Options-That-Control-Optimization).
 >
-> We are not going to go into too much details on these flags in this blog but we will cover them in the next where we show how we can carefully pick and use them according to our needs, ensuring there is more control over our flags rather than using a whole collection of them.
+> We are not going to go into too much details on these flags in this blog particularly due to the fact that _even if individual flags are specified, most optimizations are completely disabled if an `-O` level is not set_. Thereby, it is much harder to see under the hood of these gcc optimizations and is entirely another discussion for another day.
 
 ```c++
 void _if_run(unsigned int type) {
@@ -1096,6 +1096,30 @@ _switch_test:
 ```
 
 From this, we can conclude that using a jump table for as few as 1, 2, or 3 values _is_ redundant and rather impractical at the same time.
+
+For example, the following code is pragmatically and assembly-wise much effective since there is only `CMP` and `JE` and it doesn't abuse the data segment in the case of inlining the same function. For more on the latter, see [Inlining Switch Case](#inlining-switch-case).
+
+```c++
+enum class Value {
+    Number,
+    String,
+    Array,
+    Dict,
+    Iterator,
+    // ...
+};
+
+void _iterate(Value type) {
+    if(type != Value::Iterator) {
+        throw std::runtime_error("not an iterator");
+        // return 1;
+    }
+    /* Handle the iterator instance */
+    return; 
+}
+```
+
+
 
 
 
