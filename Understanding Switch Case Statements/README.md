@@ -48,6 +48,7 @@
         - [Computed GOTO: C++ Statement Expression](#computed-goto-c-statement-expression)
       - [Local Label Concern](#local-label-concern)
         - [Inlining Switch Case](#inlining-switch-case)
+        - [GCC Loop Optimization](#gcc-loop-optimization)
       - [Customizing _switch_go](#customizing-_switch_go)
         - [Benchmark](#benchmark)
       - [Default Case: Can we do without it?](#default-case-can-we-do-without-it)
