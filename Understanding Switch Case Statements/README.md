@@ -2838,6 +2838,126 @@ ASM generation compiler returned: 0
 
 
 
+##### GCC Loop Optimization
+
+It is interesting to observe that with the `-O1` optimization or deeper, gcc does a pretty good job of inlining a function for more efficient assembly code when necessary. For instance, expensive loops.
+
+Given the following function:
+
+```c
+inline void _switch_run(unsigned int) {
+  // ...
+}
+
+int main() {
+  volatile int c = 1;
+
+  for(int i = 0; i < 1; i++) {
+    _switch_run(c);
+  }
+  
+  return 0;
+}
+```
+
+Inlining in this case doesn't really pay off so we get the following warning:
+
+```bash
+<source>:5:14: warning: inlining failed in call to '_switch_run': call is unlikely and code size would grow [-Winline]
+    5 |  inline void _switch_run(unsigned int type) {
+      |              ^~~~~~~~~~~
+<source>:69:12: note: called from here
+   69 |            _switch_run(c);
+```
+
+
+
+However, if we have a loop such as:
+
+```c
+int main() {
+  volatile int c = 1;
+    
+  for(int i = 0; i < 10; i++) {
+    _switch_run(c);
+  }
+
+  return 0;
+}
+```
+
+gcc is fine with inlining it as well as nested loops:
+
+```c
+for(int i = 0; i < 10; i++) {
+  for(int j = 0; j < 100; j++) {
+    _switch_run(c);
+  }
+
+}
+```
+
+
+
+Both of the loops above could be considered _loops with parameters determined at compile time_ since `i = 0` and `i < 10` thus the compiler can make a decision whether the loop is expensive and inline the function/s in it.
+
+For example, if we have a value that _cannot_ be determined at compile time - the compiler goes ahead and inlines it as it is unknown how expensive the loop is going to be.
+
+```c
+int main() {
+  volatile int c = 1;
+  volatile int n = 1;
+
+  for(int i = 0; i < n; i++) {
+    _switch_run(c);
+  }
+  
+  return 0;
+}
+```
+
+
+
+```assembly
+main:
+        mov     DWORD PTR [rsp-4], 1
+        mov     DWORD PTR [rsp-8], 1
+        mov     eax, DWORD PTR [rsp-8]
+        test    eax, eax
+        jle     .L2
+        mov     edx, 0
+        jmp     .L17
+.L15:
+        mov     DWORD PTR [rsp-12], 0
+.L16:
+        add     edx, 1
+        mov     eax, DWORD PTR [rsp-8]
+        cmp     eax, edx
+        jle     .L2
+.L17:
+        mov     eax, DWORD PTR [rsp-4]
+        cmp     eax, 10
+        ja      .L3
+        mov     eax, eax
+        jmp     [QWORD PTR .L5[0+rax*8]]
+.L5:
+        .quad   .L15
+        .quad   .L14
+        .quad   .L13
+        .quad   .L12
+        .quad   .L11
+        .quad   .L10
+        .quad   .L9
+        .quad   .L8
+        .quad   .L7
+        .quad   .L6
+        .quad   .L4
+```
+
+
+
+
+
 #### Customizing _switch_go
 
 > 🚧 Note
