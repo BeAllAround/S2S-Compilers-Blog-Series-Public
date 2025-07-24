@@ -15,7 +15,7 @@ void clean_up_S(S *s)
   }
 }
 
-S create_s(int n) {
+static inline S create_s(int n) {
   S s;
 
   s.data = malloc(sizeof(int)*1);
