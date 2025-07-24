@@ -3010,6 +3010,7 @@ On a higher level. we can roughly translate this into:
       			goto defer;
     		}
     		_default: {
+                // ...
       			goto defer;
     		}
     		defer:
@@ -3018,6 +3019,7 @@ On a higher level. we can roughly translate this into:
     }
     // ...
     _default: {
+      // ...
       goto defer;
     }
     defer:
