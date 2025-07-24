@@ -49,7 +49,7 @@
       - [Local Label Concern](#local-label-concern)
         - [Inlining Switch Case](#inlining-switch-case)
         - [GCC Loop Optimization](#gcc-loop-optimization)
-      - [Computed GOTO: RAII Concerns]()
+      - [Computed GOTO: RAII Concerns](#computed-goto-raii-concerns)
       - [Customizing _switch_go](#customizing-_switch_go)
         - [Benchmark](#benchmark)
       - [Default Case: Can we do without it?](#default-case-can-we-do-without-it)
@@ -2968,9 +2968,11 @@ _Unlike a normal goto, in GNU C++ a computed goto will not call destructors for 
 
 
 
-This is a big concern if we are jumping to computed gotos that are defined outside of the current scope. Therefore, we can't treat computed gotos as normal gotos. If we treat computed gotos loosely, that can result in unpredictable bugs like this similar to the long jump.
+This is a big concern if we are jumping to computed gotos that are defined outside of the current scope. Therefore, we can't treat computed gotos as normal gotos.
 
-This is relevant to our discussion as we can have nested switch cases. 
+Similar to the long jump, treating computed gotos loosely can result in unpredictable bugs in our code like this.
+
+This is relevant to our discussion as there can definitely be nested switch cases. 
 
 ```c
 switch(type) {
@@ -3071,7 +3073,6 @@ int main() {
 
       // s.~S(); // NOTE: Calling this for the outer scope is a problem
       // NOTE: ONLY LEAKS WHEN THE COMPUTED GOTO BLOCK ISN'T DEFINED IN THE CURRENT SCOPE WHERE IT IS SUPPOSED TO BE RELEASED.
-      // 8 bytes lost
 
       // goto *table[2]; // LEAK
       // goto zoo; // OK - STILL, A NORMAL GOTO
@@ -3093,7 +3094,7 @@ zoo: {}
 
 ```
 
-Using `valgrind`, it is fairly easy to conclude that there will be no leaks whatever as long as the computed goto is defined in the current scope where it is essentially jumped to. The edge case is jumping to a computed goto that's defined in the outer static table.
+Using `valgrind`, it is fairly easy to conclude that there will be no leaks whatever as long as the computed goto is defined in the current scope where it is essentially jumped to. The edge case is jumping to a computed goto that is defined in the outer static table.
 
 In C, it is very much possible to achieve and/or replicate this behavior and use case using the `__cleanup__` attribute. For more, check out the [cleanup (cleanup_function)](https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html#index-cleanup-variable-attribute).
 
@@ -3136,8 +3137,6 @@ void test_goto() {
          return;
        }
 
-
-
      }
 
   bar: {
@@ -3149,8 +3148,6 @@ void test_goto() {
 ```
 
 For the full source code of these two examples, refer to [computed_goto_jmp.cpp](https://github.com/BeAllAround/S2S-Compilers-Blog-Series-Public/blob/main/Understanding%20Switch%20Case%20Statements/src/computed_goto_jmp.cpp) and [computed_goto_jmp.c](https://github.com/BeAllAround/S2S-Compilers-Blog-Series-Public/blob/main/Understanding%20Switch%20Case%20Statements/src/computed_goto_jmp.c).
-
-
 
 <!-- Wrapping Custom Switch Statement into a Macro -->
 
