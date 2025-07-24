@@ -3094,7 +3094,7 @@ zoo: {}
 
 ```
 
-Using `valgrind`, it is fairly easy to conclude that there will be no leaks whatever as long as the computed goto is defined in the current scope where it is essentially jumped to. The edge case is jumping to a computed goto that is defined in the outer static table.
+Using `valgrind`, it is fairly easy to conclude that there will be no leaks whatsoever as long as the computed goto is defined in the current scope where it is essentially jumped to. The edge case is jumping to a computed goto that is defined in the outer static table.
 
 In C, it is very much possible to achieve and/or replicate this behavior and use case using the `__cleanup__` attribute. For more, check out the [cleanup (cleanup_function)](https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html#index-cleanup-variable-attribute).
 
