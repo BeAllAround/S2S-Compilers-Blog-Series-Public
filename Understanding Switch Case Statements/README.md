@@ -2970,7 +2970,7 @@ _Unlike a normal goto, in GNU C++ a computed goto will not call destructors for 
 
 This is a big concern if we are jumping to computed gotos that are defined outside of the current scope. Therefore, we can't treat computed gotos as normal gotos. If we treat computed gotos loosely, that can result in unpredictable bugs like this similar to the long jump.
 
-It is relevant to our discussion since we can have nested switch cases. 
+This is relevant to our discussion as we can have nested switch cases. 
 
 ```c
 switch(type) {
@@ -2995,16 +2995,16 @@ On a higher level. we can roughly translate this into:
 ```c
 {
     __label__ l01, l02, l03, _default, defer; 
-    static void* jtable[] = { &&l01, &&l02, &&l03 };
+    static void* jtable[] = { &&l01, /* ... */ };
     if((unsigned int)type > 2) goto _default;
     goto *jtable[type];
     l01: {
        r = 0;
        {
        		__label__ l01, l02, l03, _default, defer; 
-    		static void* jtable[] = { &&l01, &&l02, &&l03 };
+    		static void* jtable[] = { &&l01, /* ... */ };
     		if((unsigned int)type1 > 2) goto _default;
-    		goto *jtable[type1]; // This line is important in order to check there are no RAII problems where the scope that's up-a-level doesn't get cleaned up.
+    		goto *jtable[type1]; // This line is important in order to check there are no RAII problems where the scope that is, at least, one level up doesn't get cleaned up.
     		l01: {
        			// ...
       			goto defer;
