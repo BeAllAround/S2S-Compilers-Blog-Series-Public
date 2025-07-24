@@ -49,6 +49,7 @@
       - [Local Label Concern](#local-label-concern)
         - [Inlining Switch Case](#inlining-switch-case)
         - [GCC Loop Optimization](#gcc-loop-optimization)
+      - [Computed GOTO: RAII Concerns]()
       - [Customizing _switch_go](#customizing-_switch_go)
         - [Benchmark](#benchmark)
       - [Default Case: Can we do without it?](#default-case-can-we-do-without-it)
@@ -2956,6 +2957,202 @@ main:
 ```
 
 
+
+
+
+#### Computed GOTO: RAII Concerns
+
+According to the [GCC documentation](https://gcc.gnu.org/onlinedocs/gcc/Labels-as-Values.html),
+
+_Unlike a normal goto, in GNU C++ a computed goto will not call destructors for objects that go out of scope._
+
+
+
+This is a big concern if we are jumping to computed gotos that are defined outside of the current scope. Therefore, we can't treat computed gotos as normal gotos. If we treat computed gotos loosely, that can result in unpredictable bugs like this similar to the long jump.
+
+It is relevant to our discussion since we can have nested switch cases. 
+
+```c
+switch(type) {
+  case 0: {
+    r = 0;
+
+    switch(type1) {
+      case 0: {
+        // ...
+        break;
+      }
+      default: {}
+    }
+  break;
+  }
+  // ...
+}
+```
+
+On a higher level. we can roughly translate this into:
+
+```c
+{
+    __label__ l01, l02, l03, _default, defer; 
+    static void* jtable[] = { &&l01, &&l02, &&l03 };
+    if((unsigned int)type > 2) goto _default;
+    goto *jtable[type];
+    l01: {
+       r = 0;
+       {
+       		__label__ l01, l02, l03, _default, defer; 
+    		static void* jtable[] = { &&l01, &&l02, &&l03 };
+    		if((unsigned int)type1 > 2) goto _default;
+    		goto *jtable[type1]; // This line is important in order to check there are no RAII problems where the scope that's up-a-level doesn't get cleaned up.
+    		l01: {
+       			// ...
+      			goto defer;
+    		}
+    		_default: {
+      			goto defer;
+    		}
+    		defer:
+       }
+       goto defer;
+    }
+    // ...
+    _default: {
+      goto defer;
+    }
+    defer:
+}
+```
+
+
+
+Now, consider the following code in C++:
+
+> Source Code
+>
+> For the full source code of these two examples, refer to [computed_goto_jmp.cpp](https://github.com/BeAllAround/S2S-Compilers-Blog-Series-Public/blob/main/Understanding%20Switch%20Case%20Statements/src/computed_goto_jmp.cpp) and [computed_goto_jmp.c](https://github.com/BeAllAround/S2S-Compilers-Blog-Series-Public/blob/main/Understanding%20Switch%20Case%20Statements/src/computed_goto_jmp.c).
+
+```c++
+int main() {
+
+  volatile int c = 0;
+
+  static void* table[] = { &&foo, &&bar, &&zoo };
+
+  goto *table[0];
+
+
+  foo: {
+       S s;
+
+       if(c == 100) return 0;
+
+       c++;
+       goto bar; // OK
+       // goto *table[1]; // LEAK
+       // goto *table[0]; // LEAK
+       // goto foo; // OK
+
+     }
+
+  bar: {
+         S s;
+       }
+
+
+  {
+    S s;
+    {
+      S s;
+
+      static void* _table[] = { &&_exit };
+
+      // s.~S(); // NOTE: Calling this for the outer scope is a problem
+      // NOTE: ONLY LEAKS WHEN THE COMPUTED GOTO BLOCK ISN'T DEFINED IN THE CURRENT SCOPE WHERE IT IS SUPPOSED TO BE RELEASED.
+      // 8 bytes lost
+
+      // goto *table[2]; // LEAK
+      // goto zoo; // OK - STILL, A NORMAL GOTO
+      // goto _exit; // OK
+
+      goto *_table[0]; // OK
+
+      _exit: {
+         return 0;
+       }
+
+    }
+  }
+
+zoo: {}
+
+  return 0;
+}
+
+```
+
+Using `valgrind`, it is fairly easy to conclude that there will be no leaks whatever as long as the computed goto is defined in the current scope where it is essentially jumped to. The edge case is jumping to a computed goto that's defined in the outer static table.
+
+In C, it is very much possible to achieve and/or replicate this behavior and use case using the `__cleanup__` attribute. For more, check out the [cleanup (cleanup_function)](https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html#index-cleanup-variable-attribute).
+
+```c
+static inline S create_s(int n) {
+  S s;
+
+  s.data = malloc(sizeof(int)*1);
+
+  *s.data = n;
+
+  return s;
+}
+
+void test_goto() {
+  volatile int c = 0;
+
+  static void* table[] = { &&foo, &&bar };
+
+  goto *table[0];
+
+
+  foo: {
+      S s __attribute__ ((__cleanup__(clean_up_S))) = create_s(1);
+
+      static void* _table[] = { &&_exit };
+
+       if(c == 100) return;
+
+       c++;
+       // goto bar; // OK
+       // goto *table[1]; // LEAK
+       // goto *table[0]; // LEAK
+       // goto foo; // OK
+
+       goto *_table[0]; // OK
+
+      _exit: {
+        S s __attribute__ ((__cleanup__(clean_up_S))) = create_s(1);
+         return;
+       }
+
+
+
+     }
+
+  bar: {
+        S s __attribute__ ((__cleanup__(clean_up_S))) = create_s(1);
+       }
+
+  return;
+}
+```
+
+For the full source code of these two examples, refer to [computed_goto_jmp.cpp](https://github.com/BeAllAround/S2S-Compilers-Blog-Series-Public/blob/main/Understanding%20Switch%20Case%20Statements/src/computed_goto_jmp.cpp) and [computed_goto_jmp.c](https://github.com/BeAllAround/S2S-Compilers-Blog-Series-Public/blob/main/Understanding%20Switch%20Case%20Statements/src/computed_goto_jmp.c).
+
+
+
+<!-- Wrapping Custom Switch Statement into a Macro -->
+
+<!-- Since we have found a way to essentially implement our own macro -->
 
 
 
