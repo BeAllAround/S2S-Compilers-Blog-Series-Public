@@ -1721,7 +1721,7 @@ In my opinion, this optimization may be overkill if you are an old-school person
 
 ### If-else with logical || operator as a jump table
 
-If appropriate, the compiler goes as far as to turn a series of logical OR operators of an if-else statement into a jump table given that is uses the equal-to operators. From the assembly output, the way it is able to accomplish that is it looks at it as a switch case with the following:
+If appropriate, the compiler goes as far as to turn a series of logical OR operators of an if-else statement into a jump table given that uses the equal-to operators. From the assembly output, the way it is able to accomplish that is it looks at it as a switch case with the following:
 
 ```c
 case 0: case 1: case 2: case 3: case 4: case 5: case 6: ...
