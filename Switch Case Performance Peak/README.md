@@ -1,4 +1,4 @@
-# Switch Case: Performance Peak
+# Switch Case: Peak Performance
 
 
 
@@ -12,7 +12,7 @@
 
 ## Table Of Contents
 
-- **Switch Case: Performance Peak**
+- **Switch Case: Peak Performance**
   - [About Author](#about-author)
   - [Motivation](#motivation)
   - [Source Code](#source-code)
@@ -53,7 +53,7 @@ Without the properly optimized `switch case` statement, this results in about _9
 
 In my opinion, I understood that we can do much better than that and that this is _not_ feasible for millions upon millions of operations that can transpire in Decl, and so here we are!
 
-I hope you find all of the information in this article useful and applicable to your code to reach that performance peak via micro optimization.
+I hope you find all of the information in this article useful and applicable to your code in order to reach _that peak performance_ via micro optimization.
 
 
 
@@ -69,7 +69,7 @@ This article is the final conclusion of [S2S Compilers: Understanding Switch Cas
 
 It is here that we finally get to _fully and truly_ optimize the `switch case` statement so that the developer is confident of using such optimizations in their codebase without the excruciating pain of complexity, and nightmare maintenance problems and concerns each time there is, all but, a small addition to the code logic.
 
-The main focus of the [S2S Compilers: Understanding Switch Case Statements](https://dev.to/alex01/s2s-compilers-understanding-switch-case-statements-4ibk) blog is to get the readers up to speed of what the switch case is and to contextualize various implementations that the developer can _attempt_ in order to reach the performance peak.
+The main focus of the [S2S Compilers: Understanding Switch Case Statements](https://dev.to/alex01/s2s-compilers-understanding-switch-case-statements-4ibk) blog is to get the readers up to speed of what the switch case is and to contextualize various implementations that the developer can _attempt_ in order to reach the peak performance.
 
 Our conclusion of the previous blog was:
 
@@ -427,7 +427,7 @@ It is absolutely safe to say that we have successfully eliminated the overhead o
 
 ## Break vs Return
 
-While you may think that we are through with the optimization of our switch case, there is one last touch to hit the performance peak of the `switch case` statement.
+While you may think that we are through with the optimization of our switch case, there is one last touch to hit the peak performance of the `switch case` statement.
 
 This is the `break` label of the `switch case` statement that makes a `JMP` to get out of the switch case so that we don't *possibly* get stuck in an infinite loop.
 
