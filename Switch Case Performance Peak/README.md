@@ -46,7 +46,7 @@ v = 1 + 1;
 Value v = plus(makeNumber(1), makeNumber(1));
 
 // plus(Value left, Value right); JMP, JMP // Is left a number? Is right a number?
-// v.~Value(); JMP
+// v.~Value(); JMP // Is v an object to be released?
 ```
 
 Without the properly optimized `switch case` statement, this results in about _9 assembly instructions at face value!_
