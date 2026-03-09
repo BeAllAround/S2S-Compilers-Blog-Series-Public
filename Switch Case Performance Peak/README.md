@@ -16,6 +16,10 @@
   - [About Author](#about-author)
   - [Source Code](#source-code)
     - [Introduction](#introduction)
+    - [Switch Case Optimization](#switch-case-optimization)
+    - [Direct JMP Instruction Optimization](#direct-jmp-instruction-optimization)
+    - [Break vs Return](#break-vs-return)
+    - [Benchmark Results and Conclusion](#benchmark-results-and-conclusion)
 
 
 
@@ -116,8 +120,6 @@ void _switch_run(unsigned int type) {
 
 Generating the following assembly code:
 
-
-
 ```assembly
 _switch_run:
         push    rbp
@@ -181,8 +183,6 @@ _switch_run:
         pop     rbp
         ret
 ```
-
-
 
 This switch case, while safe due to the `default` case, can be barely optimized further due to its dangerous nature.
 
@@ -333,7 +333,6 @@ int _switch_case(V v) {
         case V::DICT: {
             i = 4;
             break;
-
         }
         case V::FUNC: {
             i = 5;
@@ -529,7 +528,7 @@ With all of our functions implemented, let's put them into practice by benchmark
 
 
 
-## Benchmarks and Conclusion
+## Benchmark Results and Conclusion
 
 In this section, we finally showcase why it is critical that we had as few assembly instructions as possible, resulting in more efficient (faster) code.
 
