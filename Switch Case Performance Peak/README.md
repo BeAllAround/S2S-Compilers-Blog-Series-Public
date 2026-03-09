@@ -15,11 +15,11 @@
 - **Switch Case: Performance Peak**
   - [About Author](#about-author)
   - [Source Code](#source-code)
-    - [Introduction](#introduction)
-    - [Switch Case Optimization](#switch-case-optimization)
-    - [Direct JMP Instruction Optimization](#direct-jmp-instruction-optimization)
-    - [Break vs Return](#break-vs-return)
-    - [Benchmark Results and Conclusion](#benchmark-results-and-conclusion)
+  - [Introduction](#introduction)
+  - [Switch Case Optimization](#switch-case-optimization)
+  - [Direct JMP Instruction Optimization](#direct-jmp-instruction-optimization)
+  - [Break vs Return](#break-vs-return)
+  - [Benchmark Results and Conclusion](#benchmark-results-and-conclusion)
 
 
 
