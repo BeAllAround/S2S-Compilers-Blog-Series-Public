@@ -51,7 +51,7 @@ Value v = plus(makeNumber(1), makeNumber(1));
 
 Without the properly optimized `switch case` statement, this results in about _9 assembly instructions at face value!_
 
-In my opinion, I understood that we can do much better than that and that this is _not_ feasible for millions upon millions of operations that can happen in Decl, and so here we are!
+In my opinion, I understood that we can do much better than that and that this is _not_ feasible for millions upon millions of operations that can transpire in Decl, and so here we are!
 
 I hope you find all of the information in this article useful and applicable to your code to reach that performance peak via micro optimization.
 
