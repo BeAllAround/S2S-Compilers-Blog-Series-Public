@@ -555,7 +555,9 @@ With all of our functions implemented, let's put them into practice by benchmark
 
 ## Benchmark Results and Conclusion
 
-In this section, we finally showcase why it is critical that we had as few assembly instructions as possible, resulting in more efficient (faster) code.
+Assembly instruction count can matter, but latency, branching, and memory behavior are usually more important.
+
+<!-- In this section, we finally showcase why it is critical that we had as few assembly instructions as possible, resulting in more efficient (faster) code. -->
 
 Let's benchmark all of the functions above and see the differences for ourselves!
 
