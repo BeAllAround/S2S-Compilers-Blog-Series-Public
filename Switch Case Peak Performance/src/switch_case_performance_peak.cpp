@@ -3,6 +3,7 @@
 #include <cassert>
 
 // g++ switch_case_performance_peak.cpp -o out.out -O1 && ./out.out
+// -fjump-tables
 
 #define start_time clock_t s_t_a_r_t = clock();
 
