@@ -572,6 +572,8 @@ Let's benchmark all of the functions above and see the differences for ourselves
 
 #include <cassert>
 
+#include <ctime>
+
 #define start_time clock_t s_t_a_r_t = clock();
 
 int main() {

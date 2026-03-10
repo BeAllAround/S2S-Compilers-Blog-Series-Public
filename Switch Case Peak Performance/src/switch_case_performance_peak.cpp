@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+#include <ctime>
+
 // g++ switch_case_performance_peak.cpp -o out.out -O1 && ./out.out
 // -fjump-tables
 
