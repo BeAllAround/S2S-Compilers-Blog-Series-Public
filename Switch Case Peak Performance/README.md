@@ -34,7 +34,7 @@ If you have any feedback or questions, feel free to reach out to me via [LinkedI
 
 ## Motivation
 
-Having worked on the implementation of the programming language, Decl for quite a long time now - I needed to squeeze the water out of the stone in terms of all the complier optimizations for the `switch case` statement out there as any operation is Decl is exclusively determined by a `switch case` being a dynamic programming language where all the variables and declarations are essentially of `any` type.
+Having worked on the implementation of the programming language, Decl for quite a long time now - I needed to squeeze the water out of the stone in terms of all the complier optimizations for the `switch case` statement out there as any operation in Decl is exclusively determined by a `switch case` being a dynamic programming language where all the variables and declarations are essentially of `any` type.
 
 For example, the following code in Decl requires as many as three `JMP` instructions before any other operations are done.
 
@@ -547,7 +547,7 @@ _switch_case_return(V):
 
 > 📘 Keep in mind!
 >
-> It is important to keep in mind that the `return` statement terminates the rest of the code execution (as it makes it unreachable) so make sure to code your logical carefully!
+> It is important to keep in mind that the `return` statement terminates the rest of the code execution (as it makes it unreachable) so make sure to code your logic carefully!
 
 With all of our functions implemented, let's put them into practice by benchmarking its results under heavy scenarios by wrapping them into very extensive loops. This is usually a common practice to benchmark your code in general.
 
@@ -578,15 +578,17 @@ int main() {
 
   const size_t RANGE = 100;
 
+
   std::cout << "START: SWITCH_CASE_CONDITION DEFAULT BREAK" << std::endl;
   {
 
     double _SUM = 0;
+    volatile V _t = V::NUM;
 
     for(size_t i = 0; i < RANGE; i++) {
         start_time;
         for(size_t i = 0; i < TEST_BOUNDARY; i++) {
-            assert(__switch_case(V::NUM) != 0);
+            assert(__switch_case(_t) != 0);
         }
         _SUM += static_cast<double>(clock() - s_t_a_r_t) / CLOCKS_PER_SEC;
     }
@@ -601,11 +603,12 @@ int main() {
   {
 
     double _SUM = 0;
+    volatile V _t = V::NUM;
 
     for(size_t i = 0; i < RANGE; i++) {
         start_time;
         for(size_t i = 0; i < TEST_BOUNDARY; i++) {
-            assert(_switch_case(V::NUM) != 0);
+            assert(_switch_case(_t) != 0);
         }
         _SUM += static_cast<double>(clock() - s_t_a_r_t) / CLOCKS_PER_SEC;
     }
@@ -619,11 +622,12 @@ int main() {
   {
 
     double _SUM = 0;
+    volatile V _t = V::NUM;
 
     for(size_t i = 0; i < RANGE; i++) {
         start_time;
         for(size_t i = 0; i < TEST_BOUNDARY; i++) {
-            assert(_switch_case_return(V::NUM) != 0);
+            assert(_switch_case_return(_t) != 0);
         }
         _SUM += static_cast<double>(clock() - s_t_a_r_t) / CLOCKS_PER_SEC;
     }
@@ -632,6 +636,25 @@ int main() {
 
   }
   std::cout << "END: SWITCH_CASE_CONDITION UNREACHABLE AND RETURN AS OPPOSED TO BREAK" << std::endl;
+
+  std::cout << "START: PLAIN FUNC - NO JMP" << std::endl;
+  {
+
+    double _SUM = 0;
+    volatile V _t = V::NUM;
+
+    for(size_t i = 0; i < RANGE; i++) {
+        start_time;
+        for(size_t i = 0; i < TEST_BOUNDARY; i++) {
+            assert(_plain_func_return(_t) != 0);
+        }
+        _SUM += static_cast<double>(clock() - s_t_a_r_t) / CLOCKS_PER_SEC;
+    }
+
+    std::cout << _SUM/RANGE << std::endl;
+
+  }
+  std::cout << "END: PLAIN FUNC - NO JMP" << std::endl;
 
   return 0;
 }
@@ -647,13 +670,13 @@ g++ switch_case_performance_peak.cpp -o out.out -O1 && ./out.out
 
 ```bash
 START: SWITCH_CASE_CONDITION DEFAULT BREAK
-0.00058584
+0.00063072
 END: SWITCH_CASE_CONDITION DEFAULT BREAK
 START: SWITCH_CASE_CONDITION DEFAULT UNREACHABLE
-0.00051404
+0.00055233
 END: SWITCH_CASE_CONDITION DEFAULT UNREACHABLE
 START: SWITCH_CASE_CONDITION UNREACHABLE AND RETURN AS OPPOSED TO BREAK
-0.0004997
+0.00052462
 END: SWITCH_CASE_CONDITION UNREACHABLE AND RETURN AS OPPOSED TO BREAK
 ```
 

@@ -25,6 +25,16 @@ enum class V {
 };
 
 
+int _plain_func_return(V) __attribute__ ((noinline));
+
+int _plain_func_return(V v) {
+    volatile int i = 0;
+
+    i = 1;
+
+    return i;
+}
+
 // inline int _switch_case(V);
 // inline int _single_if_condition(V);
 
@@ -307,43 +317,44 @@ int main() {
 
 /*
 START: SWITCH_CASE_CONDITION DEFAULT BREAK
-0.00067695
+0.00063072
 END: SWITCH_CASE_CONDITION DEFAULT BREAK
 START: SWITCH_CASE_CONDITION DEFAULT UNREACHABLE
-0.00049256
+0.00055233
 END: SWITCH_CASE_CONDITION DEFAULT UNREACHABLE
 START: SWITCH_CASE_CONDITION UNREACHABLE AND RETURN AS OPPOSED TO BREAK
-0.0004803
+0.00052462
 END: SWITCH_CASE_CONDITION UNREACHABLE AND RETURN AS OPPOSED TO BREAK
-START: SINGLE_IF_CONDITION
-0.00045848
-END: SINGLE_IF_CONDITION
-
+START: PLAIN FUNC - NO JMP
+0.00040733
+END: PLAIN FUNC - NO JMP
 
 START: SWITCH_CASE_CONDITION DEFAULT BREAK
-0.00069097
+0.00074139
 END: SWITCH_CASE_CONDITION DEFAULT BREAK
 START: SWITCH_CASE_CONDITION DEFAULT UNREACHABLE
-0.00054425
+0.00056842
 END: SWITCH_CASE_CONDITION DEFAULT UNREACHABLE
 START: SWITCH_CASE_CONDITION UNREACHABLE AND RETURN AS OPPOSED TO BREAK
-0.00050108
+0.00055968
 END: SWITCH_CASE_CONDITION UNREACHABLE AND RETURN AS OPPOSED TO BREAK
-START: SINGLE_IF_CONDITION
-0.00045832
-END: SINGLE_IF_CONDITION
-
+START: PLAIN FUNC - NO JMP
+0.00043133
+END: PLAIN FUNC - NO JMP
 */
+
+
 
   std::cout << "START: SWITCH_CASE_CONDITION DEFAULT BREAK" << std::endl;
   {
 
     double _SUM = 0;
+    volatile V _t = V::NUM;
 
     for(size_t i = 0; i < RANGE; i++) {
         start_time;
         for(size_t i = 0; i < TEST_BOUNDARY; i++) {
-            assert(__switch_case(V::NUM) != 0);
+            assert(__switch_case(_t) != 0);
         }
         _SUM += static_cast<double>(clock() - s_t_a_r_t) / CLOCKS_PER_SEC;
     }
@@ -358,11 +369,12 @@ END: SINGLE_IF_CONDITION
   {
 
     double _SUM = 0;
+    volatile V _t = V::NUM;
 
     for(size_t i = 0; i < RANGE; i++) {
         start_time;
         for(size_t i = 0; i < TEST_BOUNDARY; i++) {
-            assert(_switch_case(V::NUM) != 0);
+            assert(_switch_case(_t) != 0);
         }
         _SUM += static_cast<double>(clock() - s_t_a_r_t) / CLOCKS_PER_SEC;
     }
@@ -393,11 +405,12 @@ END: SINGLE_IF_CONDITION
   {
 
     double _SUM = 0;
+    volatile V _t = V::NUM;
 
     for(size_t i = 0; i < RANGE; i++) {
         start_time;
         for(size_t i = 0; i < TEST_BOUNDARY; i++) {
-            assert(_switch_case_return(V::NUM) != 0);
+            assert(_switch_case_return(_t) != 0);
         }
         _SUM += static_cast<double>(clock() - s_t_a_r_t) / CLOCKS_PER_SEC;
     }
@@ -407,6 +420,24 @@ END: SINGLE_IF_CONDITION
   }
   std::cout << "END: SWITCH_CASE_CONDITION UNREACHABLE AND RETURN AS OPPOSED TO BREAK" << std::endl;
 
+  std::cout << "START: PLAIN FUNC - NO JMP" << std::endl;
+  {
+
+    double _SUM = 0;
+    volatile V _t = V::NUM;
+
+    for(size_t i = 0; i < RANGE; i++) {
+        start_time;
+        for(size_t i = 0; i < TEST_BOUNDARY; i++) {
+            assert(_plain_func_return(_t) != 0);
+        }
+        _SUM += static_cast<double>(clock() - s_t_a_r_t) / CLOCKS_PER_SEC;
+    }
+
+    std::cout << _SUM/RANGE << std::endl;
+
+  }
+  std::cout << "END: PLAIN FUNC - NO JMP" << std::endl;
 
   /*
   std::cout << "START: SINGLE_IF_CONDITION" << std::endl;
@@ -429,127 +460,3 @@ END: SINGLE_IF_CONDITION
 
   return 0;
 }
-
-
-
-/*
-
-// NOTE: USING the IF STATEMENT WHEN THERE IS ONLY ONE TYPE TO DETERIMINE IF THE OPERATION IS VALID (e.g. 1 + "STR") IS ESSENTIAL SINCE THE WORST CASE "COMPLEXITY" FOR SWTICH CASE IS:
-// CMP, JA, MOV, JMP - which makes it four assembly instructions
-// SINGLE IF CONDITION IS: CMP, JNE, MOV - which is one assembly instruction less for both best case and worst case.
-
-ASSEMBLY OUTPUT:
-_switch_case(V):
-        mov     DWORD PTR [rsp-4], 0
-        cmp     edi, 4
-        ja      .L2
-        mov     edi, edi
-        jmp     [QWORD PTR .L4[0+rdi*8]]
-.L4:
-        .quad   .L8
-        .quad   .L7
-        .quad   .L6
-        .quad   .L5
-        .quad   .L3
-.L8:
-        mov     DWORD PTR [rsp-4], 1
-.L2:
-        mov     eax, DWORD PTR [rsp-4]
-        ret
-.L7:
-        mov     DWORD PTR [rsp-4], 2
-        jmp     .L2
-.L6:
-        mov     DWORD PTR [rsp-4], 3
-        jmp     .L2
-.L5:
-        mov     DWORD PTR [rsp-4], 4
-        jmp     .L2
-.L3:
-        mov     DWORD PTR [rsp-4], 5
-        jmp     .L2
-_single_if_condition(V):
-        mov     DWORD PTR [rsp-4], 0
-        mov     eax, 1
-        cmp     edi, 1
-        jne     .L9
-        mov     eax, DWORD PTR [rsp-4]
-.L9:
-        ret
-main:
-        mov     edi, 0
-        call    _switch_case(V)
-        mov     eax, 0
-        ret
-
-
-C++ SOURCE:
-enum class V {
-    NUM,
-    STRING,
-    ARR,
-    DICT,
-    FUNC,
-};
-
-
-
-int _switch_case(V v) {
-
-    volatile int i = 0;
-
-
-    switch(v) {
-        case V::NUM: {
-            i = 1;
-            break;
-        }
-        case V::STRING: {
-            i = 2;
-            break;
-        }
-        case V::ARR: {
-            i = 3;
-            break;
-        }
-        case V::DICT: {
-            i = 4;
-            break;
-
-        }
-        case V::FUNC: {
-            i = 5;
-            break;
-        }
-        default: {
-            break;
-        }
-    }
-
-
-    return i;
-
-}
-
-
-int _single_if_condition(V v){ 
-    volatile int i = 0;
-
-    // NOTE: ERROR
-    if(v != V::STRING) {
-        return 1;
-    }
-
-    return i;
-
-}
-
-
-int main() {
-
-
-    _switch_case(V::NUM);
-
-    return 0;
-}
-*/
