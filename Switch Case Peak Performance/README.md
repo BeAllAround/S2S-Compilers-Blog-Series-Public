@@ -637,25 +637,6 @@ int main() {
   }
   std::cout << "END: SWITCH_CASE_CONDITION UNREACHABLE AND RETURN AS OPPOSED TO BREAK" << std::endl;
 
-  std::cout << "START: PLAIN FUNC - NO JMP" << std::endl;
-  {
-
-    double _SUM = 0;
-    volatile V _t = V::NUM;
-
-    for(size_t i = 0; i < RANGE; i++) {
-        start_time;
-        for(size_t i = 0; i < TEST_BOUNDARY; i++) {
-            assert(_plain_func_return(_t) != 0);
-        }
-        _SUM += static_cast<double>(clock() - s_t_a_r_t) / CLOCKS_PER_SEC;
-    }
-
-    std::cout << _SUM/RANGE << std::endl;
-
-  }
-  std::cout << "END: PLAIN FUNC - NO JMP" << std::endl;
-
   return 0;
 }
 ```
