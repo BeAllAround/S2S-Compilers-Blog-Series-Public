@@ -29,6 +29,10 @@ enum class V {
 
 
 int _plain_func_return(V) __attribute__ ((noinline));
+int _switch_case_return(V) __attribute__ ((noinline));
+int _switch_case(V) __attribute__ ((noinline));
+int __switch_case(V) __attribute__ ((noinline));
+
 
 int _plain_func_return(V v) {
     volatile int i = 0;
@@ -40,6 +44,7 @@ int _plain_func_return(V v) {
 
 // inline int _switch_case(V);
 // inline int _single_if_condition(V);
+
 
 int _switch_case_return(V v) {
 
@@ -111,6 +116,8 @@ _switch_case_return(V):
 }
 
 
+
+
 int _switch_case(V v) {
 
     volatile int i = 0;
@@ -176,6 +183,7 @@ _switch_case(V):
     return i;
 
 }
+
 
 
 int __switch_case(V v) {
@@ -463,3 +471,4 @@ END: PLAIN FUNC - NO JMP
 
   return 0;
 }
+
