@@ -21,6 +21,7 @@
   - [Direct JMP Instruction Optimization](#direct-jmp-instruction-optimization)
   - [Break vs Return](#break-vs-return)
   - [Benchmark Results and Conclusion](#benchmark-results-and-conclusion)
+    - [Linux Perf Stats](#linux-perf-stats)
 
 
 
@@ -673,5 +674,115 @@ As our ultimate reward, we get to break down the great results of our micro opti
 
 
 
+### Linux Perf Stats
 
+```bash
+START: SWITCH_CASE_CONDITION DEFAULT BREAK
+0.001588
+END: SWITCH_CASE_CONDITION DEFAULT BREAK
+
+ Performance counter stats for './out.out':
+
+            162,15 msec task-clock                       #    0,988 CPUs utilized             
+                 2      context-switches                 #   12,334 /sec                      
+                 1      cpu-migrations                   #    6,167 /sec                      
+               137      page-faults                      #  844,877 /sec                      
+         191667732      cpu_atom/cycles/                 #    1,182 GHz                         (7,47%)
+         327598821      cpu_core/cycles/                 #    2,020 GHz                         (90,06%)
+         520210064      cpu_atom/instructions/           #    2,71  insn per cycle              (8,70%)
+        1949203244      cpu_core/instructions/           #   10,17  insn per cycle              (90,06%)
+         159155942      cpu_atom/branches/               #  981,513 M/sec                       (8,71%)
+         649344343      cpu_core/branches/               #    4,004 G/sec                       (90,06%)
+            207986      cpu_atom/branch-misses/          #    0,13% of all branches             (8,71%)
+              5015      cpu_core/branch-misses/          #    0,00% of all branches             (90,06%)
+             TopdownL1 (cpu_core)                 #      0,4 %  tma_backend_bound      
+                                                  #      0,0 %  tma_bad_speculation    
+                                                  #     11,3 %  tma_frontend_bound     
+                                                  #     88,3 %  tma_retiring             (90,06%)
+             TopdownL1 (cpu_atom)                 #      4,5 %  tma_bad_speculation    
+                                                  #     57,9 %  tma_retiring             (8,70%)
+                                                  #      8,5 %  tma_backend_bound      
+                                                  #      8,5 %  tma_backend_bound_aux  
+                                                  #     29,0 %  tma_frontend_bound       (8,71%)
+
+       0,164053653 seconds time elapsed
+
+       0,159006000 seconds user
+       0,005000000 seconds sys
+```
+
+
+
+```bash
+START: SWITCH_CASE_CONDITION DEFAULT UNREACHABLE
+0.00135889
+END: SWITCH_CASE_CONDITION DEFAULT UNREACHABLE
+
+ Performance counter stats for './out.out':
+
+            139,22 msec task-clock                       #    0,989 CPUs utilized             
+                 3      context-switches                 #   21,548 /sec                      
+                 3      cpu-migrations                   #   21,548 /sec                      
+               137      page-faults                      #  984,042 /sec                      
+         198806298      cpu_atom/cycles/                 #    1,428 GHz                         (4,58%)
+         276323001      cpu_core/cycles/                 #    1,985 GHz                         (93,94%)
+         398268584      cpu_atom/instructions/           #    2,00  insn per cycle              (5,34%)
+        1684695478      cpu_core/instructions/           #    8,47  insn per cycle              (93,94%)
+         109741029      cpu_atom/branches/               #  788,247 M/sec                       (5,35%)
+         526065442      cpu_core/branches/               #    3,779 G/sec                       (93,94%)
+            249023      cpu_atom/branch-misses/          #    0,23% of all branches             (5,34%)
+              9850      cpu_core/branch-misses/          #    0,01% of all branches             (93,94%)
+             TopdownL1 (cpu_core)                 #      0,4 %  tma_backend_bound      
+                                                  #      0,0 %  tma_bad_speculation    
+                                                  #      3,9 %  tma_frontend_bound     
+                                                  #     95,7 %  tma_retiring             (93,94%)
+             TopdownL1 (cpu_atom)                 #      4,6 %  tma_bad_speculation    
+                                                  #     44,6 %  tma_retiring             (5,34%)
+                                                  #      9,5 %  tma_backend_bound      
+                                                  #      9,5 %  tma_backend_bound_aux  
+                                                  #     41,3 %  tma_frontend_bound       (5,34%)
+
+       0,140714902 seconds time elapsed
+
+       0,136607000 seconds user
+       0,003988000 seconds sys
+
+```
+
+
+
+```bash
+START: SWITCH_CASE_CONDITION UNREACHABLE AND RETURN AS OPPOSED TO BREAK
+0.00140369
+END: SWITCH_CASE_CONDITION UNREACHABLE AND RETURN AS OPPOSED TO BREAK
+
+ Performance counter stats for './out.out':
+
+            143,29 msec task-clock                       #    0,987 CPUs utilized             
+                 4      context-switches                 #   27,915 /sec                      
+                 4      cpu-migrations                   #   27,915 /sec                      
+               135      page-faults                      #  942,140 /sec                      
+         234326956      cpu_atom/cycles/                 #    1,635 GHz                         (4,26%)
+         273776908      cpu_core/cycles/                 #    1,911 GHz                         (93,60%)
+         512019762      cpu_atom/instructions/           #    2,19  insn per cycle              (5,61%)
+        1680687481      cpu_core/instructions/           #    7,17  insn per cycle              (93,60%)
+         158185875      cpu_atom/branches/               #    1,104 G/sec                       (5,71%)
+         524454946      cpu_core/branches/               #    3,660 G/sec                       (93,60%)
+             35045      cpu_atom/branch-misses/          #    0,02% of all branches             (5,70%)
+             21299      cpu_core/branch-misses/          #    0,01% of all branches             (93,60%)
+             TopdownL1 (cpu_core)                 #      0,8 %  tma_backend_bound      
+                                                  #      0,4 %  tma_bad_speculation    
+                                                  #      2,7 %  tma_frontend_bound     
+                                                  #     96,1 %  tma_retiring             (93,60%)
+             TopdownL1 (cpu_atom)                 #      0,1 %  tma_bad_speculation    
+                                                  #     50,8 %  tma_retiring             (5,70%)
+                                                  #      3,4 %  tma_backend_bound      
+                                                  #      3,4 %  tma_backend_bound_aux  
+                                                  #     45,7 %  tma_frontend_bound       (5,70%)
+
+       0,145156837 seconds time elapsed
+
+       0,142083000 seconds user
+       0,003001000 seconds sys
+```
 
