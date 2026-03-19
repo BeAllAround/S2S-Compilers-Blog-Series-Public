@@ -87,7 +87,8 @@ void test_0() {
 
 _recursive_label: // void _recursive_label(size_t n);
   {
-    if(call_stack[stack_p - 1].n == _end-1) { //  if(n == stack_0_size) {
+    size_t n = call_stack[stack_p - 1].n;
+    if(n == _end-1) { //  if(n == stack_0_size) {
       goto _done;
     }
 
@@ -104,7 +105,8 @@ _recursive_label: // void _recursive_label(size_t n);
        // call_stack[stack_p] = new(&buffer[stack_p * sizeof(CallFrame)]) CallFrame(call_stack[stack_p-1]->n+1);
        // stack_p++;
 
-       call_stack[stack_p++] = CallFrame(call_stack[stack_p-1].n+1); // _recursive(n+1);
+       call_stack[stack_p++] = CallFrame(n+1); // _recursive(n+1);
+
        goto _recursive_label;
        // AFTER_CODE?? See below
 
