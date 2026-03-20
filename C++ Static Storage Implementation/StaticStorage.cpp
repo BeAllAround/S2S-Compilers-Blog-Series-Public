@@ -145,8 +145,8 @@ int main1() {
   _storage_add(storage, S(3), S);
 
 
-  // S s = std::move(storage.pop());
-  // assert(*s.i_ptr == 3);
+  S s = std::move(storage.pop());
+  assert(*s.i_ptr == 3);
 
   return 0;
 }
