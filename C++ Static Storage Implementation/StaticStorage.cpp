@@ -138,11 +138,11 @@ int main1() {
 
   StaticStorage<S, 10> storage;
 
-  storage.add(S(1));
+  // storage.add(S(1));
   // storage.add(S(2));
 
 
-  // _storage_add(storage, S(3), S);
+  _storage_add(storage, S(3), S);
 
 
   // S s = std::move(storage.pop());
