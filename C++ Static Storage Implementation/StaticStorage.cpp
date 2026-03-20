@@ -83,6 +83,7 @@ int main0() {
 template<class T, size_t Size>
 class StaticStorage {
   public:
+  using ItemType = T;
   unsigned char buffer[sizeof(T) * Size];
   size_t stack_count = 0;
 
@@ -125,19 +126,27 @@ class StaticStorage {
 };
 
 
+#define _storage_add(storage, item, T) \
+    new(&storage.buffer[storage.stack_count * sizeof(T)]) item; \
+    storage.stack_count++; \
+
+
+
 int main1() {
+
 
 
   StaticStorage<S, 10> storage;
 
   storage.add(S(1));
-  storage.add(S(2));
+  // storage.add(S(2));
 
 
-  S s = std::move(storage.pop());
+  // _storage_add(storage, S(3), S);
 
 
-  assert(*s.i_ptr == 2);
+  // S s = std::move(storage.pop());
+  // assert(*s.i_ptr == 3);
 
   return 0;
 }
