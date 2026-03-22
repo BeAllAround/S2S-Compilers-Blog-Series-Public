@@ -255,11 +255,18 @@ int main() {
     root.get()->right.get()->left = make_shared<TreeNode>(6);
     root.get()->right.get()->right = make_shared<TreeNode>(7);
 
+    root.get()->right.get()->left->left = make_shared<TreeNode>(0);
+    root.get()->right.get()->left->right = make_shared<TreeNode>(-1);
+
     root.get()->right.get()->right->left = make_shared<TreeNode>(8);
     root.get()->right.get()->right->right = make_shared<TreeNode>(9);
 
     root.get()->right.get()->right->right->left = make_shared<TreeNode>(77);
     root.get()->right.get()->right->right->right = make_shared<TreeNode>(88);
+
+
+    root.get()->right.get()->left->left->left = make_shared<TreeNode>(99);
+    root.get()->right.get()->left->left->right = make_shared<TreeNode>(111);
  */
 
     print_inorder(root);
