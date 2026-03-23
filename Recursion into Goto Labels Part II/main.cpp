@@ -131,6 +131,7 @@ void _print_order(const shared_ptr<TreeNode>& _node) {
     // Can be dynamically allocated stack, which means we can call it as long as there is memory available
     static CallFrame stack[20];
 
+    // static size_t stack_c = 0;
     size_t stack_c = 0;
 
     // PUSH
