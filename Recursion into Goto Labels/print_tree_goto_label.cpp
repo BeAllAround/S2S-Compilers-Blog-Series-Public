@@ -5,6 +5,14 @@
 #include <cassert>
 
 
+#define start_time clock_t s_t_a_r_t = clock();
+
+#if __GNUG__
+#define end_time printf("[Cpu_time_used: %f]\n", static_cast<double>(clock() - s_t_a_r_t) / CLOCKS_PER_SEC);
+#else
+#define end_time printf("[Cpu_time_used: %f]\n", ((double) (clock() - s_t_a_r_t)) / CLOCKS_PER_SEC);
+#endif
+
 using namespace std;
 
 struct TreeNode {
@@ -60,12 +68,23 @@ struct CallFrame {
         ret.origin = other.ret.origin;
     }
 
+
+    CallFrame(CallFrame&& other) {
+        args.node = std::move(other.args.node);
+        ret.origin = std::move(other.ret.origin); // NOT NEEDED FOR PRIMITIVE
+    }
+
     CallFrame& operator=(const CallFrame& other) {
         args.node = other.args.node;
         ret.origin = other.ret.origin;
         return *this;
     }
 
+    CallFrame& operator=(CallFrame&& other) {
+        args.node = std::move(other.args.node);
+        ret.origin = std::move(other.ret.origin); // NOT NEEDED FOR PRIMITIVE
+        return *this;
+    }
 
     ~CallFrame() {}
 
@@ -98,14 +117,17 @@ print_inorder(std::shared_ptr<TreeNode> const&):
         ret
 */
 
+// inline void _print_order(const shared_ptr<TreeNode>& _node) __attribute__((always_inline));
+
 void _print_order(const shared_ptr<TreeNode>& _node) {
 
-    // TODO: Do these need to be local?
+    // NOTE: CAN'T INLINE THIS FUNCTION DUE TO THE COMPUTED GOTO: YUCK!
     __label__ call1_origin;
     __label__ call2_origin;
 
     // void *jmps_origin[] = { &&call1_origin, &&call2_origin };
 
+    // Can be dynamically allocated stack, which means we can call it as long as there is memory available
     static CallFrame stack[20];
 
     size_t stack_c = 0;
@@ -139,8 +161,7 @@ void _print_order(const shared_ptr<TreeNode>& _node) {
                 goto _print_in_order;
             }
             // ORIGIN OF RET
-            call1_origin: {
-            }
+            call1_origin: {}
 
             {
                 // NOTE: NEEDS TO BE HERE SINCE AFTER COMPUTED GOTO TO CALL1_ORIGIN: THE NODE ABOVE IS LOST
@@ -165,8 +186,7 @@ void _print_order(const shared_ptr<TreeNode>& _node) {
                 goto _print_in_order;
             }
             // ORIGIN OF RET
-            call2_origin: {
-            }
+            call2_origin: {}
 
         }
 
@@ -229,21 +249,10 @@ void _print_order(const shared_ptr<TreeNode>& _node) {
 }
 
 
-int main() {
 
-    shared_ptr<TreeNode> root = make_shared<TreeNode>(4);
+#define _SIZE 10000
 
-
-    root.get()->left = make_shared<TreeNode>(2);
-    root.get()->right = make_shared<TreeNode>(5);
-
-    root.get()->left.get()->left = make_shared<TreeNode>(1);
-    root.get()->left.get()->right = make_shared<TreeNode>(3);
-
-    root.get()->right.get()->left = make_shared<TreeNode>(6);
-    root.get()->right.get()->right = make_shared<TreeNode>(7);
-
-/*
+shared_ptr<TreeNode> _make_root() {
     shared_ptr<TreeNode> root = make_shared<TreeNode>(4);
 
     root.get()->left = make_shared<TreeNode>(2);
@@ -267,7 +276,57 @@ int main() {
 
     root.get()->right.get()->left->left->left = make_shared<TreeNode>(99);
     root.get()->right.get()->left->left->right = make_shared<TreeNode>(111);
- */
+
+
+    return root;
+}
+
+
+
+
+void benchmark_01() {
+    shared_ptr<TreeNode> root = _make_root();
+
+    start_time;
+    for(size_t i = 0; i < _SIZE; i++) {
+        _print_order(root);
+        std::cout << std::endl;
+    }
+
+    end_time;
+
+
+}
+
+
+void benchmark_02() {
+    shared_ptr<TreeNode> root = _make_root();
+
+    start_time;
+    for(size_t i = 0; i < _SIZE; i++) {
+        print_inorder(root);
+        std::cout << std::endl;
+    }
+
+    end_time;
+
+}
+
+
+int main() {
+
+    shared_ptr<TreeNode> root = make_shared<TreeNode>(4);
+
+
+    root.get()->left = make_shared<TreeNode>(2);
+    root.get()->right = make_shared<TreeNode>(5);
+
+    root.get()->left.get()->left = make_shared<TreeNode>(1);
+    root.get()->left.get()->right = make_shared<TreeNode>(3);
+
+    root.get()->right.get()->left = make_shared<TreeNode>(6);
+    root.get()->right.get()->right = make_shared<TreeNode>(7);
+
 
     print_inorder(root);
     std::cout << std::endl;
@@ -275,6 +334,11 @@ int main() {
 
     _print_order(root);
     std::cout << std::endl;
+
+
+    // benchmark_01();
+
+    // benchmark_02();
 
 
     return 0;
