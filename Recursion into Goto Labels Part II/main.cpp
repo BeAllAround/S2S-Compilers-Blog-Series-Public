@@ -132,7 +132,8 @@ void _print_order(const shared_ptr<TreeNode>& _node) {
     static CallFrame stack[20];
 
     // static size_t stack_c = 0;
-    size_t stack_c = 0;
+    size_t stack_c = 0; // mov     QWORD PTR [rbp-24], 0
+
 
     // PUSH
     stack[stack_c] = CallFrame(_node);
@@ -168,7 +169,7 @@ void _print_order(const shared_ptr<TreeNode>& _node) {
 
         {
             // NOTE: NEEDS TO BE HERE SINCE AFTER COMPUTED GOTO TO CALL1_ORIGIN: THE NODE ABOVE IS LOST
-            const shared_ptr<TreeNode>& node = stack[stack_c-1].args.node; // last: stack_c-1
+            const shared_ptr<TreeNode>& node = stack[stack_c-1].args.node; // last: stack_c-1 // mov     rax, QWORD PTR [rbp-24]
             // std::cout << "CALL1 RET: " << stack_c << std::endl;
             std::cout << node.get()->val << " ";
         }
