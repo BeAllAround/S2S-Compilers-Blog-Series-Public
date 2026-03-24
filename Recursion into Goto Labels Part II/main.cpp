@@ -151,6 +151,7 @@ void _print_order(const shared_ptr<TreeNode>& _node) {
             goto _ret;
         }
 
+        // NOTE: DUE TO LABEL AND COMPUTED JUMPS, IT IS REQUIRED TO ENCLOSE THESE BLOCKS IN C++ DUE TO SKIPPING INITIALIZATION AND C++ RAII. THIS ALSO MAKES SENSE AT ASSEMBLY LEVEL
         // _print_in_order(node.get()->left);
         {
             // NOTE: Limit the scope of a by declaring it within a block statement that ends before the label.
