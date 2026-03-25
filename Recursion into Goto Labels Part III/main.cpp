@@ -274,6 +274,30 @@ int _recursive_sum_tree(const shared_ptr<TreeNode>& node) {
 
 }
 
+/*
+// ASSEMBLY
+_recursive_sum_tree(std::shared_ptr<TreeNode> const&):
+        push    rbp
+        push    rbx
+        sub     rsp, 8
+        mov     rbp, QWORD PTR [rdi]
+        mov     eax, 0
+        test    rbp, rbp
+        je      .L15
+        mov     ebx, DWORD PTR [rbp+0]
+        lea     rdi, [rbp+8]
+        call    _recursive_sum_tree(std::shared_ptr<TreeNode> const&)
+        add     ebx, eax
+        lea     rdi, [rbp+24]
+        call    _recursive_sum_tree(std::shared_ptr<TreeNode> const&)
+        add     eax, ebx
+.L15:
+        add     rsp, 8
+        pop     rbx
+        pop     rbp
+        ret
+*/
+
 // TRANSLATION OF THE FUNCTION ABOVE
 int _sum_tree(const shared_ptr<TreeNode>& _node) {
 
