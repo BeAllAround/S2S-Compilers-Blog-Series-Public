@@ -79,14 +79,19 @@ struct CallFrame {
     }
 
     CallFrame& operator=(const CallFrame& other) {
+
         args.node = other.args.node;
         ret.origin = other.ret.origin;
+        ret.value = other.ret.value;
+
         return *this;
     }
 
     CallFrame& operator=(CallFrame&& other) {
         args.node = std::move(other.args.node);
         ret.origin = std::move(other.ret.origin); // NOT NEEDED FOR PRIMITIVE
+        ret.value = other.ret.value;
+
         return *this;
     }
 
