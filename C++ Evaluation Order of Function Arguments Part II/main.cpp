@@ -301,6 +301,48 @@ double _seven() {
 }) \
 
 /*
+
+// gcc -E output after the preprocessor
+Value v1 = ({
+  const auto& left = Value(_one() + rand() % 11);
+  const auto& right = ({
+    const auto& left = Value(_two());
+    const auto& right = ({
+      const auto& left = Value(_three());
+      const auto& right = ({
+        const auto& left = Value(_four() + 32222);
+        const auto& right = ({
+          const auto& left = Value(_five());
+          const auto& right = ({
+            const auto& left = Value(_six());
+            const auto& right = ({
+              const auto& left = Value(_seven());
+              const auto& right = Value(12222);
+              printf("whence: %s\n", "7");
+              plus(left, right);
+            });
+            printf("whence: %s\n", "6");
+            plus(left, right);
+          });
+          printf("whence: %s\n", "5");
+          plus(left, right);
+        });
+        printf("whence: %s\n", "4");
+        plus(left, right);
+      });
+      printf("whence: %s\n", "3");
+      plus(left, right);
+    });
+    printf("whence: %s\n", "2");
+    plus(left, right);
+  });
+  printf("whence: %s\n", "1");
+  plus(left, right);
+})
+# 432 "/app/example.cpp";
+*/
+
+/*
         addsd   xmm0, QWORD PTR [rsp+8]
         cvttsd2si       eax, xmm0
         mov     DWORD PTR [rsp+24], eax
@@ -337,7 +379,7 @@ double _seven() {
         call    plus(Value const&, Value const&) # assembly call 7
         lea     rbx, [rsp+400]
         mov     rdi, rbx
-        call    Value::~Value() [complete object destructor] # RValue destruct at the end of the expression (semi colon)
+        call    Value::~Value() [complete object destructor] # RValue destruct at the end of the expression (semi colon) but in this case after the macro is replaced at the preproecssor level it is const auto& ref.
         lea     rdi, [rsp+304]
         call    Value::~Value() [complete object destructor]
         lea     rdx, [rsp+352]
