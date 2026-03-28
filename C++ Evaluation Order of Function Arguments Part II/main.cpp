@@ -293,9 +293,10 @@ double _seven() {
 }
 
 
-#define _plus(a, b) ({ \
+#define _plus(whence, a, b) ({ \
     const auto& left = a; \
     const auto& right = b; \
+    printf("whence: %s\n", whence); \
     plus(left, right); \
 }) \
 
@@ -333,7 +334,7 @@ double _seven() {
         lea     rdi, [rsp+352]
         lea     rdx, [rsp+400]
         lea     rsi, [rsp+304]
-        call    plus(Value const&, Value const&)
+        call    plus(Value const&, Value const&) # assembly call 7
         lea     rbx, [rsp+400]
         mov     rdi, rbx
         call    Value::~Value() [complete object destructor] # RValue destruct at the end of the expression (semi colon)
@@ -342,7 +343,7 @@ double _seven() {
         lea     rdx, [rsp+352]
         lea     rsi, [rsp+256]
         mov     rdi, rbx
-        call    plus(Value const&, Value const&)
+        call    plus(Value const&, Value const&) # assembly call 6
         lea     rbx, [rsp+352]
         mov     rdi, rbx
         call    Value::~Value() [complete object destructor]
@@ -351,7 +352,7 @@ double _seven() {
         lea     rdx, [rsp+400]
         lea     rsi, [rsp+208]
         mov     rdi, rbx
-        call    plus(Value const&, Value const&)
+        call    plus(Value const&, Value const&) # assembly call 5 ... etc down the tree of calls below
         lea     rbx, [rsp+400]
         mov     rdi, rbx
         call    Value::~Value() [complete object destructor]
@@ -416,13 +417,13 @@ int main() {
                         plus(Value(_seven()), Value(12222))))))));
 */
 
-  Value v1 = _plus(Value(_one() + rand() % 11), // assembly call 7
-    _plus(Value(_two()), // assembly call 6
-        _plus(Value(_three()), // assembly call 5
-            _plus(Value(_four() + 32222), // assembly call 4
-                _plus(Value(_five()), // assembly call 3
-                    _plus(Value(_six()), // assembly call 2
-                        _plus(Value(_seven()), Value(12222)) //  assembly call 1
+  Value v1 = _plus("1", Value(_one() + rand() % 11), // assembly call 7
+    _plus("2", Value(_two()), // assembly call 6
+        _plus("3", Value(_three()), // assembly call 5
+            _plus("4", Value(_four() + 32222), // assembly call 4
+                _plus("5", Value(_five()), // assembly call 3
+                    _plus("6", Value(_six()), // assembly call 2
+                        _plus("7", Value(_seven()), Value(12222)) //  assembly call 1
                     )
                 )
             )
