@@ -322,13 +322,19 @@ int main() {
                         plus(Value(_seven()), Value(12222))))))));
                         */
 
-  Value v1 = _plus(Value(_one() + rand() % 11),
-    _plus(Value(_two()),
-        _plus(Value(_three()),
-            _plus(Value(_four() + 2222),
-                _plus(Value(_five()),
-                    _plus(Value(_six()),
-                        _plus(Value(_seven()), Value(12222))))))));
+  Value v1 = _plus(Value(_one() + rand() % 11), // assembly call 7
+    _plus(Value(_two()), // assembly call 6
+        _plus(Value(_three()), // assembly call 5
+            _plus(Value(_four() + 2222), // assembly call 4
+                _plus(Value(_five()), // assembly call 3
+                    _plus(Value(_six()), // assembly call 2
+                        _plus(Value(_seven()), Value(12222)) //  assembly call 1
+                    )
+                )
+            )
+        )
+      )
+  );
  
 
   volatile double ii = v1.get_num();
