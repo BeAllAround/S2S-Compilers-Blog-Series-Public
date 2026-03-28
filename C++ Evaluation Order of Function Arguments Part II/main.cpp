@@ -123,7 +123,7 @@ class Value {
     }
 
   friend inline Value plus(const Value & left,
-    const Value & right)  __attribute__((always_inline)) {
+    const Value & right)  {
     switch (left.get_type()) {
     case ValueType::NUM: {
       switch (right.get_type()) {
@@ -299,6 +299,100 @@ double _seven() {
     plus(left, right); \
 }) \
 
+/*
+        addsd   xmm0, QWORD PTR [rsp+8]
+        cvttsd2si       eax, xmm0
+        mov     DWORD PTR [rsp+24], eax
+        call    _two()
+        mov     DWORD PTR [rsp+64], 0
+        cvttsd2si       eax, xmm0
+        mov     DWORD PTR [rsp+72], eax
+        call    _three()
+        mov     DWORD PTR [rsp+112], 0
+        cvttsd2si       eax, xmm0
+        mov     DWORD PTR [rsp+120], eax
+        call    _four()
+        mov     DWORD PTR [rsp+160], 0
+        addsd   xmm0, QWORD PTR .LC23[rip]
+        cvttsd2si       eax, xmm0
+        mov     DWORD PTR [rsp+168], eax
+        call    _five()
+        mov     DWORD PTR [rsp+208], 0
+        cvttsd2si       eax, xmm0
+        mov     DWORD PTR [rsp+216], eax
+        call    _six()
+        mov     DWORD PTR [rsp+256], 0
+        cvttsd2si       eax, xmm0
+        mov     DWORD PTR [rsp+264], eax
+        call    _seven()
+        mov     DWORD PTR [rsp+304], 0
+        cvttsd2si       eax, xmm0
+        mov     DWORD PTR [rsp+312], eax
+        mov     DWORD PTR [rsp+400], 0
+        mov     DWORD PTR [rsp+408], 12222
+        lea     rdi, [rsp+352]
+        lea     rdx, [rsp+400]
+        lea     rsi, [rsp+304]
+        call    plus(Value const&, Value const&)
+        lea     rbx, [rsp+400]
+        mov     rdi, rbx
+        call    Value::~Value() [complete object destructor] # RValue destruct at the end of the expression (semi colon)
+        lea     rdi, [rsp+304]
+        call    Value::~Value() [complete object destructor]
+        lea     rdx, [rsp+352]
+        lea     rsi, [rsp+256]
+        mov     rdi, rbx
+        call    plus(Value const&, Value const&)
+        lea     rbx, [rsp+352]
+        mov     rdi, rbx
+        call    Value::~Value() [complete object destructor]
+        lea     rdi, [rsp+256]
+        call    Value::~Value() [complete object destructor]
+        lea     rdx, [rsp+400]
+        lea     rsi, [rsp+208]
+        mov     rdi, rbx
+        call    plus(Value const&, Value const&)
+        lea     rbx, [rsp+400]
+        mov     rdi, rbx
+        call    Value::~Value() [complete object destructor]
+        lea     rdi, [rsp+208]
+        call    Value::~Value() [complete object destructor]
+        lea     rdx, [rsp+352]
+        lea     rsi, [rsp+160]
+        mov     rdi, rbx
+        call    plus(Value const&, Value const&)
+        lea     rbx, [rsp+352]
+        mov     rdi, rbx
+        call    Value::~Value() [complete object destructor]
+        lea     rdi, [rsp+160]
+        call    Value::~Value() [complete object destructor]
+        lea     rdx, [rsp+400]
+        lea     rsi, [rsp+112]
+        mov     rdi, rbx
+        call    plus(Value const&, Value const&)
+        lea     rbx, [rsp+400]
+        mov     rdi, rbx
+        call    Value::~Value() [complete object destructor]
+        lea     rdi, [rsp+112]
+        call    Value::~Value() [complete object destructor]
+        lea     rdx, [rsp+352]
+        lea     rsi, [rsp+64]
+        mov     rdi, rbx
+        call    plus(Value const&, Value const&)
+        lea     rdi, [rsp+352]
+        call    Value::~Value() [complete object destructor]
+        lea     rdi, [rsp+64]
+        call    Value::~Value() [complete object destructor]
+        lea     rdi, [rsp+448]
+        mov     rdx, rbx
+        lea     rsi, [rsp+16]
+        call    plus(Value const&, Value const&)
+        mov     rdi, rbx
+        call    Value::~Value() [complete object destructor]
+        lea     rdi, [rsp+16]
+        call    Value::~Value() [complete object destructor]
+        pxor    xmm0, xmm
+*/
 
 
 int main() {
@@ -320,12 +414,12 @@ int main() {
                 plus(Value(_five()),
                     plus(Value(_six()),
                         plus(Value(_seven()), Value(12222))))))));
-                        */
+*/
 
   Value v1 = _plus(Value(_one() + rand() % 11), // assembly call 7
     _plus(Value(_two()), // assembly call 6
         _plus(Value(_three()), // assembly call 5
-            _plus(Value(_four() + 2222), // assembly call 4
+            _plus(Value(_four() + 32222), // assembly call 4
                 _plus(Value(_five()), // assembly call 3
                     _plus(Value(_six()), // assembly call 2
                         _plus(Value(_seven()), Value(12222)) //  assembly call 1
