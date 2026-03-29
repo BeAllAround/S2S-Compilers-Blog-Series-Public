@@ -64,6 +64,44 @@ int main() {
 
     return 0;
 }
+
+#include <iostream>
+
+class S {
+    public:
+    int i { 0 };
+    S() {}
+    S(int i) : i{i} {}
+
+
+
+    void print() __attribute__((noinline)) {
+        std::cout << "print()" << std::endl;
+
+        std::cout << i << std::endl;
+
+        return;
+    }
+
+    // Destructor or any function with no body once inlined, it becomes a NOP (since it can take one cycle) at O0 level optimizations but from O1 on, it is optimized/filtered out altogether
+    ~S() __attribute__((always_inline)) {
+
+    }
+
+};
+
+int main() {
+
+    volatile int i = 10;
+
+    S s = S(i);
+
+    s.print();
+
+
+    return 0;
+}
+
 */
 
 class S {
