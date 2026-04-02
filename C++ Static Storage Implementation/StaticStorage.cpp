@@ -112,13 +112,13 @@ class StaticStorage {
 
   T& pop() {
     stack_count--;
-    return *reinterpret_cast<S*>(buffer + ( stack_count * sizeof(T)));
+    return *reinterpret_cast<T*>(buffer + ( stack_count * sizeof(T)));
   }
 
 
   ~StaticStorage() {
     for(size_t i = 0; i < stack_count; i++) {
-      reinterpret_cast<S*>(buffer + (i * sizeof(T)))->~S();
+      reinterpret_cast<T*>(buffer + (i * sizeof(T)))->~S();
     }
   }
 
