@@ -118,7 +118,7 @@ class StaticStorage {
 
   ~StaticStorage() {
     for(size_t i = 0; i < stack_count; i++) {
-      reinterpret_cast<T*>(buffer + (i * sizeof(T)))->~S();
+      reinterpret_cast<T*>(buffer + (i * sizeof(T)))->~T();
     }
   }
 
