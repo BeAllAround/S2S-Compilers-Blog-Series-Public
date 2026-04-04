@@ -154,3 +154,43 @@ int main() {
     return 0;
 }
 
+
+/*
+START: s1
+S()
+Ss()
+~Ss()
+~S()
+END: s1
+START: s2
+S()
+Ss(int)
+~Ss()
+~S()
+END: s2
+START: s3
+S()
+Ss(const char*)
+S()
+~Ss()
+~S()
+END: s3
+START: s4
+S()
+Ss(bool)
+S()
+S&operator=(S&&)
+~S()
+~Ss()
+~S()
+END: s4
+START: s5
+S()
+S(S&&)
+Ss(S&&)
+~S()
+~Ss()
+~S()
+END: s5
+ */
+
