@@ -153,7 +153,7 @@ int main() {
         lea     rbx, [rbp-48]
         mov     rsi, rbx
         mov     edi, 8
-        call    operator new(unsigned long, void*)
+        call    operator new(unsigned long, void*) # NOTE: inlined (optimized out) at -O1
         mov     r12, rax
         mov     r14d, 1
         mov     esi, 1
@@ -168,6 +168,14 @@ int main() {
 .L51:
         nop
 
+*/
+
+        // S s = S(1);
+/*
+        lea     rax, [rbp-56]
+        mov     esi, 1
+        mov     rdi, rax
+        call    S::S(int) [complete object constructor]
 */
         // SANITY CHECK
         assert(*(reinterpret_cast<S*>(buffer + (0))->i_ptr) == 1);
@@ -215,7 +223,7 @@ int main() {
         lea     rbx, [rbp-96]
         mov     rsi, rbx
         mov     edi, 8
-        call    operator new(unsigned long, void*)
+        call    operator new(unsigned long, void*) # NOTE: inlined (optimized out) at -O1
         mov     r12, rax
         mov     r14d, 1
         mov     esi, 1
