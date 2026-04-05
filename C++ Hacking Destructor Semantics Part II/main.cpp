@@ -198,11 +198,13 @@ int main() {
     std::cout << "START: Block2" << std::endl;
     {
 
-        // NOTE: CLOSURE PROBLEMS AS WELL
+        // NOTE: CLOSURE PROBLEMS AS WELL EVEN FOR [&var, &var1]
+        // Plus, it is more work for the compiler to inline the lambda struct operator()() (CALL operator)
         auto process_s = []() {
             S s (1);
 
             // mutate/process s1 based on my code logic
+            // s = S(2);
 
             // Copy Elision
             return s;
