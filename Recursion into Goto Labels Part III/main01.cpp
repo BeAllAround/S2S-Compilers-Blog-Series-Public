@@ -138,8 +138,14 @@ int _recursion01(int _n) {
 
     CallFrame initial_call = CallFrame();
     initial_call.args.n = _n;
-    initial_call.vars.i = 1;
+    initial_call.vars.i = 0;
+    /* OK
+     * Preventing
+     *  warning: ‘call1.CallFrame::vars.CallFrame::Body::i’ may be used uninitialized [-Wmaybe-uninitialized]
+         vars.i = other.vars.i;
+    */
     initial_call.ret.origin = nullptr; // Origin not required here
+
 
     // PUSH
     stack[stack_c] = std::move(initial_call);
@@ -166,14 +172,20 @@ int _recursion01(int _n) {
             std::cout << 2 << std::endl;
             goto _ret;
         }
-
         #define _i stack[_last].vars.i
+        _i = 1; // BODY VARS INIT WHERE IT SHOULD BE INITIALIZED AND EVALUATED BASED ON THE RECURSIVE FUNCTION ABOVE
+
         while(_i < 3) {
             {
                 // NOTE: Limit the scope of a by declaring it within a block statement that ends before the label.
                 CallFrame call1 = CallFrame();
                 call1.args.n = _i; 
-                call1.vars.i = 1; // BODY VARS
+                call1.vars.i = 0;
+                /* OK
+                 * Preventing
+                 *  warning: ‘call1.CallFrame::vars.CallFrame::Body::i’ may be used uninitialized [-Wmaybe-uninitialized]
+                  vars.i = other.vars.i;
+                */
                 call1.ret.origin = &&call1_origin;
                 // PUSH
                 stack[stack_c++] = std::move(call1);
