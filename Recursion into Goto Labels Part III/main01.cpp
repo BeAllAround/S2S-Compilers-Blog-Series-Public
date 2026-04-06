@@ -14,6 +14,11 @@ struct CallFrame {
         int n;
     } args;
 
+    // Body Variables such as i that need to be in the current call frame as well. See void recursion01(int) below
+    struct Body {
+      int i;
+    } vars;
+
 
     // Return Vals
     struct Ret {
@@ -31,6 +36,7 @@ struct CallFrame {
 
     CallFrame(const CallFrame& other) {
         args.n = other.args.n;
+        vars.i = other.vars.i;
         ret.origin = other.ret.origin;
         ret.value = other.ret.value;
     }
@@ -38,13 +44,14 @@ struct CallFrame {
 
     CallFrame(CallFrame&& other) {
         args.n = std::move(other.args.n);
+        vars.i = other.vars.i;
         ret.origin = std::move(other.ret.origin); // NOT NEEDED FOR PRIMITIVE
         ret.value = other.ret.value;
     }
 
     CallFrame& operator=(const CallFrame& other) {
-
         args.n = other.args.n;
+        vars.i = other.vars.i;
         ret.origin = other.ret.origin;
         ret.value = other.ret.value;
 
@@ -53,6 +60,7 @@ struct CallFrame {
 
     CallFrame& operator=(CallFrame&& other) {
         args.n = std::move(other.args.n);
+        vars.i = other.vars.i;
         ret.origin = std::move(other.ret.origin); // NOT NEEDED FOR PRIMITIVE
         ret.value = other.ret.value;
 
@@ -68,7 +76,7 @@ struct CallFrame {
 // ASSEMBLY -O1 level (Cleanest assembly to read in my opinion)
 recursion01(int):
         push    r14
-        push    rbx
+        push    rbx # Register Body Vars?
         sub     rsp, 24
         cmp     edi, 1
         je      .L17
@@ -128,36 +136,44 @@ int _recursion01(int _n) {
     size_t stack_c = 0; // mov     QWORD PTR [rbp-24], 0
 
 
+    CallFrame initial_call = CallFrame();
+    initial_call.args.n = _n;
+    initial_call.vars.i = 1;
+    initial_call.ret.origin = nullptr; // Origin not required here
+
     // PUSH
-    stack[stack_c] = CallFrame(_n);
+    stack[stack_c] = std::move(initial_call);
     stack_c++;
 
+    #define _last stack_c-1
 
-    int i = 1;
+    // int i = 1;
 
     // CALL
     __recursion_01: {}
 
     // function args
-    int n = stack[stack_c-1].args.n; // last: stack_c-1
+    int n = stack[_last].args.n; // last: stack_c-1
 
 
     { // FUNCTION BODY
         if(n == 1) {
-            stack[stack_c-1].ret.value = 0; // return 0;
+            stack[_last].ret.value = 0; // return 0;
             std::cout << 1 << std::endl;
             goto _ret;
         } else if(n == 2) {
-            stack[stack_c-1].ret.value = 0; // return 0;
+            stack[_last].ret.value = 0; // return 0;
             std::cout << 2 << std::endl;
             goto _ret;
         }
 
-        while(i < 3) {
+        #define _i stack[_last].vars.i
+        while(_i < 3) {
             {
                 // NOTE: Limit the scope of a by declaring it within a block statement that ends before the label.
                 CallFrame call1 = CallFrame();
-                call1.args.n = i;
+                call1.args.n = _i; 
+                call1.vars.i = 1; // BODY VARS
                 call1.ret.origin = &&call1_origin;
                 // PUSH
                 stack[stack_c++] = std::move(call1);
@@ -169,7 +185,7 @@ int _recursion01(int _n) {
             call1_origin: {}
 
 
-           i++; 
+           _i++; 
         }
 
     }
