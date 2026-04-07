@@ -9,6 +9,9 @@
 #include <stb_ds.h>
 
 
+#include <cstdint>
+
+
 
 template<class T, size_t Size>
 class StaticStorage {
@@ -71,6 +74,8 @@ class S;
 class S {
   public:
   int* i_ptr { nullptr };
+  std::string str; // NOTE: FOR TESTING STB DS REALLOCATION
+
   S() {
     std::cout << "S()" << std::endl;
   }
@@ -78,23 +83,28 @@ class S {
   S(int i) {
     std::cout << "S(int)" << std::endl;
     i_ptr = new int(i);
+    str = std::to_string(reinterpret_cast<uintptr_t>(i_ptr));
   }
 
   S(const S& other) {
     std::cout << "S(const S&)" << std::endl;
     i_ptr = new int(*other.i_ptr);
+    str = other.str;
   }
 
   S(S&& other) {
     std::cout << "S(S&&)" << std::endl;
     i_ptr = other.i_ptr;
     other.i_ptr = nullptr;
+    str = std::move(other.str);
   }
 
 
   S& operator=(const S& other) {
     std::cout << "S&operator=(const S&)" << std::endl;
     i_ptr = new int(*other.i_ptr);
+    str = other.str;
+
     return *this;
   }
 
@@ -103,6 +113,12 @@ class S {
     std::cout << "S&operator=(S&&)" << std::endl;
     i_ptr = other.i_ptr;
     other.i_ptr = nullptr;
+
+    // new(&str) std::string(std::move(other.str)); // cleap on str needs to be invoked as well so this is out of the consideration.
+    // TODO FIXME: PROBLEMS FOR STB DS
+    // str = std::move(other.str);
+    // str = other.str;
+
     return *this;
   }
 
@@ -319,6 +335,32 @@ int main() {
 
     }
     std::cout << "END: Block6" << std::endl;
+
+
+    // TODO: FIXME: THE REALLOCATION
+    std::cout << "START: Block7" << std::endl;
+    {
+        StbDs<S> arr;
+
+        const int _range = 5;
+
+        // arrsetcap(arr.arr, 1);
+        std::cout << "stbds_arrcap(arr.arr) " << stbds_arrcap(arr.arr) << std::endl;
+
+        for(int i = 0; i < _range; i++) {
+          arrpush_new_place(arr.arr, S(i));
+        }
+
+        std::cout << "stbds_arrcap(arr.arr) " << stbds_arrcap(arr.arr) << std::endl;
+
+        for(int i = 0; i < _range; i++) {
+          std::cout << (arr.arr+i) << std::endl;
+          std::cout << *((arr.arr+i)->i_ptr) << std::endl;
+          assert(*((arr.arr+i)->i_ptr) == i);
+        }
+
+    }
+    std::cout << "END: Block7" << std::endl;
 
 
     return 0;
