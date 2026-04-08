@@ -170,9 +170,7 @@ class S {
     other.i_ptr = nullptr;
 
     // new(&str) std::string(std::move(other.str)); // cleap on str needs to be invoked as well so this is out of the consideration.
-    // TODO FIXME: PROBLEMS FOR STB DS
     str = std::move(other.str);
-    // str = other.str;
 
     return *this;
   }
@@ -321,6 +319,7 @@ int main() {
           std::cout << (arr.arr+i) << std::endl;
           std::cout << "i_ptr: "  << *((arr.arr+i)->i_ptr) << std::endl;
           assert(*((arr.arr+i)->i_ptr) == i);
+          assert((arr.arr+i)->str == std::to_string(reinterpret_cast<uintptr_t>((arr.arr+i)->i_ptr)));
         }
 
     }
