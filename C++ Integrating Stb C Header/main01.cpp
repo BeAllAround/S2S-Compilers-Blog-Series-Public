@@ -7,6 +7,10 @@
 
 struct _header {
     size_t length;
+
+    _header() {
+      std::cout << "_header()" << std::endl;
+    }
 };
 
 
@@ -78,7 +82,7 @@ class S {
 int main() {
     char* ptr = reinterpret_cast<char*>(new char[sizeof(_header) + sizeof(S)]);
 
-    S s1 = S(0);
+    S s1 = S(13);
 
     new(ptr + 0* sizeof(_header)) _header();
 
@@ -89,12 +93,21 @@ int main() {
 
     assert(reinterpret_cast<_header*>(ptr+0)->length == 10);
 
-    reinterpret_cast<S*>(ptr+sizeof(_header))->~S();
 
     // TODO: REALLOCATION OF _HEADER AND BUFFER+COPY/MOVE
+    //
+    //
 
 
-    delete[] reinterpret_cast<char*>(ptr);
+    S* _ptr = reinterpret_cast<S*>(ptr + sizeof(_header));
+
+    std::cout << *((_ptr+0)->i_ptr) << std::endl;
+
+
+    reinterpret_cast<S*>(ptr + sizeof(_header))->~S();
+
+    delete[] (reinterpret_cast<_header*>(_ptr) - 1);
+    // delete[] reinterpret_cast<char*>(_ptr);
 
     return 0;
 }
