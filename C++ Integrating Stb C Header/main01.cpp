@@ -78,20 +78,26 @@ class S {
 };
 
 
+int main02() {
+  return 0;
+}
 
-int main() {
+int main01() {
+  std::cout << sizeof(unsigned char) << std::endl;
+  std::cout << sizeof(char) << std::endl;
+
     char* ptr = reinterpret_cast<char*>(new char[sizeof(_header) + sizeof(S)]);
 
     S s1 = S(13);
 
     new(ptr + 0* sizeof(_header)) _header();
 
-    reinterpret_cast<_header*>(ptr+ 0 *sizeof(_header))->length = 10;
+    reinterpret_cast<_header*>(ptr+ 0 *sizeof(_header))->length = 1;
 
     new(ptr + sizeof(_header) + 0 * sizeof(S)) S(std::move(s1));
 
 
-    assert(reinterpret_cast<_header*>(ptr+0)->length == 10);
+    assert(reinterpret_cast<_header*>(ptr+0)->length == 1);
 
 
     // TODO: REALLOCATION OF _HEADER AND BUFFER+COPY/MOVE
@@ -106,8 +112,15 @@ int main() {
 
     reinterpret_cast<S*>(ptr + sizeof(_header))->~S();
 
-    delete[] (reinterpret_cast<_header*>(_ptr) - 1);
-    // delete[] reinterpret_cast<char*>(_ptr);
+    ::operator delete[](ptr);
+    // OR, delete[] reinterpret_cast<char*>(ptr);
+    // OR, delete[] (reinterpret_cast<_header*>(_ptr) - 1);
 
     return 0;
 }
+
+int main() {
+  return main01();
+}
+
+
