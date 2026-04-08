@@ -352,7 +352,7 @@ int main() {
         }
 
         std::cout << "stbds_arrcap(arr.arr) " << stbds_arrcap(arr.arr) << std::endl;
-
+        // NOTE: C REALLOC SOMEHOW JUST WORKS WITH I_PTR MEMBER ONLY - MOST LIKELY DUE TO THE IMPLEMENTATION OF REALLOC ON THE OS LEVEL
         for(int i = 0; i < _range; i++) {
           std::cout << (arr.arr+i) << std::endl;
           std::cout << *((arr.arr+i)->i_ptr) << std::endl;
