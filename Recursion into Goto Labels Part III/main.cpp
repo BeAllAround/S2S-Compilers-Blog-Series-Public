@@ -277,6 +277,14 @@ int _recursive_sum_tree(const shared_ptr<TreeNode>& node) {
         return 0;
     }
 
+    /*
+    // Less perplexing to translate if we are look at this like the following:
+    int n = node.get()->val;
+    int n1 = _recursive_sum_tree(node.get()->left);
+    int n2 = _recursive_sum_tree(node.get()->right);
+    return n + n1 + n2;
+    */
+
     return node.get()->val + _recursive_sum_tree(node.get()->left) + _recursive_sum_tree(node.get()->right);
 
 }
