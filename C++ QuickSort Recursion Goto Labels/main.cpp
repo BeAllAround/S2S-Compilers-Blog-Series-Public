@@ -378,7 +378,7 @@ void _quickSort(int* _arr, int _low, int _high) {
         // pop rbx
         stack.pop();
 
-        // NOTE: INITIAL PUSH ON LINE 137
+        // NOTE: INITIAL PUSH ON LINE 309
         if(stack.stack_count == 0) {
             goto _done;
             // return;
