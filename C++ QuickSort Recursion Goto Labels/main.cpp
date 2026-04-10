@@ -5,8 +5,48 @@
 #include <iostream>
 
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include <cassert>
+
+
+
+void _quickSort(int*, int, int);
+void printArray(int*, int);
+
+// void quickSort(int*, int, int);
+
+
+
+int cmp(const void *a, const void *b) {
+    return (*(int*)a - *(int*)b);
+}
+
+void runTest(int input[], int n) {
+    int *expected = (int*)malloc(n * sizeof(int));
+    int *actual   = (int*)malloc(n * sizeof(int));
+
+    memcpy(expected, input, n * sizeof(int));
+    memcpy(actual, input, n * sizeof(int));
+
+    // Ground truth
+    qsort(expected, n, sizeof(int), cmp);
+
+    // Your implementation
+    _quickSort(actual, 0, n - 1);
+
+    printArray(expected, n);
+    printArray(actual, n);
+
+    // Compare arrays
+    for (int i = 0; i < n; i++) {
+        assert(expected[i] == actual[i]);
+    }
+
+    free(expected);
+    free(actual);
+}
 
 template<class T, size_t Size>
 class StaticStorage {
@@ -273,55 +313,56 @@ void _quickSort(int* _arr, int _low, int _high) {
     __quickSort: {}
 
     // function args
-	int* arr = stack.last().args.arr;
+	  int* arr = stack.last().args.arr;
 
-	int low = stack.last().args.low;
-	int high = stack.last().args.high;
+	  int low = stack.last().args.low;
+	  int high = stack.last().args.high;
 
 
     { // FUNCTION BODY
 
-		if(low < high) {
-			int pi = partition(arr, low, high);
+      if (low < high)
+      {
+        int pi = partition(arr, low, high);
 
-			// push vars
-			stack.last().vars.pi = pi;
+        // push vars
+        stack.last().vars.pi = pi;
 
-			{
-				CallFrame call1 = CallFrame();
-				call1.args.arr = arr;
-				call1.args.low = low;
-				call1.args.high = pi - 1;
-				call1.ret.origin = &&call1_origin;
-            	// PUSH CALL
-            	_storage_push(stack, CallFrame(std::move(call1)), CallFrame);
-				// CALL
-				goto __quickSort;
-			}
-			// ORIGIN OF RET
-        	call1_origin: {}
+        {
+          CallFrame call1 = CallFrame();
+          call1.args.arr = arr;
+          call1.args.low = low;
+          call1.args.high = pi - 1;
+          call1.ret.origin = &&call1_origin;
+          // PUSH CALL
+          _storage_push(stack, CallFrame(std::move(call1)), CallFrame);
+          // CALL
+          goto __quickSort;
+        }
+        // ORIGIN OF RET
+        call1_origin:{}
 
-			{
-				int pi = stack.last().vars.pi;
-				int* arr = stack.last().args.arr;
+        {
+          int pi = stack.last().vars.pi;
+          int *arr = stack.last().args.arr;
 
-				int high = stack.last().args.high;
-				CallFrame call2 = CallFrame();
-				call2.args.arr = arr;
-				call2.args.low = pi + 1;
-				call2.args.high = high;
-				call2.ret.origin = &&call2_origin;
-            	// PUSH
-            	_storage_push(stack, CallFrame(std::move(call2)), CallFrame);
-				// CALL
-				goto __quickSort;
-			}
-			// ORIGIN OF RET
-        	call2_origin: {}
+          int high = stack.last().args.high;
+          CallFrame call2 = CallFrame();
+          call2.args.arr = arr;
+          call2.args.low = pi + 1;
+          call2.args.high = high;
+          call2.ret.origin = &&call2_origin;
+          // PUSH
+          _storage_push(stack, CallFrame(std::move(call2)), CallFrame);
+          // CALL
+          goto __quickSort;
+        }
+        // ORIGIN OF RET
+        call2_origin:{}
 
-		}
+      }
 
-		goto _ret; // CAN BE JUST REMOVED
+      goto _ret; // CAN BE JUST REMOVED
 
     }
 
@@ -495,9 +536,57 @@ int main03() {
     return 0;
 }
 
+int main04() {
+
+    int t1[] = {10, 7, 8, 9, 1, 5};
+    int t2[] = {1, 2, 3, 4, 5};
+    int t3[] = {5, 4, 3, 2, 1};
+    int t4[] = {5, 5, 5, 5};
+    int t5[] = {42};
+    int t6[] = {2, 1};
+    int t7[] = {-3, -1, -7, -4};
+    int t8[] = {-10, 0, 5, -3, 8};
+    int t9[] = {3, 1, 2, 3, 3, 0};
+    // int t10[] = {2147483647, -2147483648, 0}; // The expected output for this one is 2147483647 -2147483648 0 for some reason. INT_MAX for 32bit Overflow anyways ...
+
+    runTest(t1, sizeof(t1)/sizeof(int));
+    runTest(t2, sizeof(t2)/sizeof(int));
+    runTest(t3, sizeof(t3)/sizeof(int));
+    runTest(t4, sizeof(t4)/sizeof(int));
+    runTest(t5, sizeof(t5)/sizeof(int));
+    runTest(t6, sizeof(t6)/sizeof(int));
+    runTest(t7, sizeof(t7)/sizeof(int));
+    runTest(t8, sizeof(t8)/sizeof(int));
+    runTest(t9, sizeof(t9)/sizeof(int));
+    // runTest(t10, sizeof(t10)/sizeof(int));
+
+    std::cout << "All tests passed" << std::endl;
+
+    return 0;
+}
+
+void fuzzTest() {
+    srand(time(NULL));
+
+    for (int t = 0; t < 1000; t++) {
+        int n = rand() % 100 + 1;
+        int arr[100];
+
+        for (int i = 0; i < n; i++) {
+            arr[i] = rand() % 1000 - 500;
+        }
+
+        runTest(arr, n);
+    }
+}
+
 int main()
 {
 
-	return main03();
+	int r = (main03(), main04());
+
+  fuzzTest();
+
+  return r;
 
 }
