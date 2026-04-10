@@ -479,6 +479,8 @@ int main() {
     std::cout << std::endl;
     */
 
+    // sudo perf stat ./out.out
+    // BOTTOM LINE: benchmark_01 is about 8.4 milion cpu_core/instructions faster than benchmark_02 ...
 
     benchmark_01();
 
