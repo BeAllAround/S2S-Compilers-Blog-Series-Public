@@ -42,14 +42,30 @@ class StaticStorage {
 
 
   // T* pop();
-
-  T& pop() {
+  // NOTE: POP FOR STATIC STORAGE IS ILL_ADVISED, RESULTING IN MEMORY LEAKS.
+  /*
+  T& pop() { // SAME GOES FOR const T&
     stack_count--;
-    return *reinterpret_cast<T*>(buffer + ( stack_count * sizeof(T)));
+    T& popped = *reinterpret_cast<T*>(buffer + ( stack_count * sizeof(T)));
+
+    // *reinterpret_cast<T*>(buffer + ( stack_count * sizeof(T))) = T();
+
+
+    return popped;
+  }
+  */
+
+  const T& at(size_t i) {
+    return *reinterpret_cast<T*>(buffer + ( i * sizeof(T)));
   }
 
-  T&at(size_t i) {
-    return *reinterpret_cast<T*>(buffer + ( i * sizeof(T)));
+  // TODO: WRAP UP IN A MACRO JUST LIKE _storage_add
+  void insert(size_t i, T&& item) {
+    T* _at = reinterpret_cast<T*>(buffer + ( i * sizeof(T)));
+    *_at = std::move(item);
+    // ALTERNATIVELY
+    // _at->~T();
+    // new(&buffer[i * sizeof(T)]) T(std::move(item));
   }
 
 
@@ -65,7 +81,8 @@ class StaticStorage {
 
 #define _storage_add(storage, item, T) \
     new(&storage.buffer[storage.stack_count * sizeof(T)]) item; \
-    storage.stack_count++; \
+    storage.stack_count++; 
+#define _storage_insert_replace(storage, inx, item) storage.insert(inx, item)
 
 
 
@@ -102,6 +119,9 @@ class S {
 
   S& operator=(const S& other) {
     std::cout << "S&operator=(const S&)" << std::endl;
+    if(i_ptr != nullptr) {
+      delete i_ptr;
+    }
     i_ptr = new int(*other.i_ptr);
     str = other.str;
 
@@ -111,13 +131,16 @@ class S {
 
   S& operator=(S&& other) {
     std::cout << "S&operator=(S&&)" << std::endl;
+    if(i_ptr != nullptr) {
+      delete i_ptr;
+    }
     i_ptr = other.i_ptr;
     other.i_ptr = nullptr;
 
     // new(&str) std::string(std::move(other.str)); // cleap on str needs to be invoked as well so this is out of the consideration.
     // TODO FIXME: PROBLEMS FOR STB DS
-    // str = std::move(other.str);
-    // str = other.str;
+    str = std::move(other.str);
+    // other.str.clear();
 
     return *this;
   }
@@ -292,8 +315,18 @@ int main() {
         */
 
 
+        _storage_add(_list, S(make_s(n, n1)), S);
+
+
+        /*
+        // NOTE: MEMORY LEAKS
+        const S& popped_s = _list.pop();
 
         _storage_add(_list, S(make_s(n, n1)), S);
+
+        const S& popped_s01 = _list.pop();
+        // assert(*_list.pop().i_ptr == 12);
+        */
 
         assert(*_list.at(0).i_ptr == 12);
 
@@ -311,7 +344,7 @@ int main() {
         S* arr = NULL;
 
         // arrpush
-        arrput(arr, S(0));
+        // arrput(arr, S(0)); // NOTE: Conditional jump or move depends on uninitialised value(s)
 
 
         for(size_t i = 0; i < arrlenu(arr); i++) {
@@ -337,8 +370,24 @@ int main() {
     std::cout << "END: Block6" << std::endl;
 
 
-    // TODO: FIXME: THE REALLOCATION: STBDS_REALLOC
     std::cout << "START: Block7" << std::endl;
+    {
+      StaticStorage<S, 2> arr_s;
+
+      _storage_add(arr_s, S(make_s(10, 11)), S);
+
+      assert(*arr_s.at(0).i_ptr == 31);
+
+      _storage_insert_replace(arr_s, 0, S(21));
+
+      assert(*arr_s.at(0).i_ptr == 21);
+
+    }
+    std::cout << "END: Block7" << std::endl;
+
+    /*
+    // TODO: FIXME: THE REALLOCATION: STBDS_REALLOC
+    std::cout << "START: Block8" << std::endl;
     {
         StbDs<S> arr;
 
@@ -360,7 +409,8 @@ int main() {
         }
 
     }
-    std::cout << "END: Block7" << std::endl;
+    std::cout << "END: Block8" << std::endl;
+    */
 
 
     return 0;

@@ -157,6 +157,9 @@ class S {
 
   S& operator=(const S& other) {
     std::cout << "S&operator=(const S&)" << std::endl;
+    if(i_ptr != nullptr) {
+      delete i_ptr;
+    }
     i_ptr = new int(*other.i_ptr);
     str = other.str;
 
@@ -166,6 +169,9 @@ class S {
 
   S& operator=(S&& other) {
     std::cout << "S&operator=(S&&)" << std::endl;
+    if(i_ptr != nullptr) {
+      delete i_ptr;
+    }
     i_ptr = other.i_ptr;
     other.i_ptr = nullptr;
 
