@@ -306,7 +306,8 @@ int main() {
 
         const int _range = 5;
 
-        // arrsetcap(arr.arr, 1);
+        // arrsetcap(arr.arr, 10); // WORKS
+
         std::cout << "stbds_arrcap(arr.arr) " << stbds_arrcap(arr.arr) << std::endl;
 
         for(int i = 0; i < _range; i++) {
