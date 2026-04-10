@@ -1,108 +1,75 @@
 #include <iostream>
 
-#include <memory>
 
-#include <stdlib.h>
+template<class T, size_t Size>
+class StaticStorage {
+  public:
+  using ItemType = T;
+  unsigned char buffer[sizeof(T) * Size];
+  size_t stack_count = 0;
 
-#define start_time clock_t s_t_a_r_t = clock();
-
-#if __GNUG__
-#define end_time printf("[Cpu_time_used: %f]\n", static_cast<double>(clock() - s_t_a_r_t) / CLOCKS_PER_SEC);
-#else
-#define end_time printf("[Cpu_time_used: %f]\n", ((double) (clock() - s_t_a_r_t)) / CLOCKS_PER_SEC);
-#endif
+  StaticStorage() {}
 
 
-/*
+  // NOTE: Deleted for now. Will think about this
+  StaticStorage(const StaticStorage&) = delete;
+  StaticStorage(StaticStorage&&) = delete;
 
-// See: Section 34.4 Allocators of The C++ Programming Language 4th Edition
+  StaticStorage& operator=(const StaticStorage&) = delete;
+  StaticStorage& operator=(StaticStorage&&) = delete;
+
+  void add(const T& item) {
+    new(&buffer[stack_count * sizeof(T)]) T(item);
+    stack_count++;
+  }
+
+  void add(T&& item) {
+    new(&buffer[stack_count * sizeof(T)]) T(std::move(item));
+    stack_count++;
+  }
 
 
-References:
+  // T* pop();
+  // NOTE: POP FOR STATIC STORAGE IS ILL_ADVISED, RESULTING IN MEMORY LEAKS (EVEN WHEN THERE IS A CAST, WE ARE STILL POINTINT TO UCHAR BUFFER)
+  /*
+  T& pop() { // SAME GOES FOR const T&
+    stack_count--;
+    T& popped = *reinterpret_cast<T*>(buffer + ( stack_count * sizeof(T)));
 
-https://en.cppreference.com/w/cpp/memory/allocator
-https://en.cppreference.com/w/cpp/memory/allocator/allocate
-https://www.amazon.com/C-Programming-Language-4th/dp/0321563840
-https://gcc.gnu.org/onlinedocs/gcc-4.6.3/libstdc++/api/a00958_source.html
+    // *reinterpret_cast<T*>(buffer + ( stack_count * sizeof(T))) = T();
 
-*/
 
-// See: 34. Memory and Resources
+    return popped;
+  }
+  */
 
-// never compile with -O3 - it might optimize your code too much and remove the unused allocated memory
+  const T& at(size_t i) {
+    return *reinterpret_cast<T*>(buffer + ( i * sizeof(T)));
+  }
 
-/*
-#include <iostream>
+  // TODO: WRAP UP IN A MACRO JUST LIKE _storage_add
+  void insert(size_t i, T&& item) {
+    T* _at = reinterpret_cast<T*>(buffer + ( i * sizeof(T)));
+    *_at = std::move(item);
+    // ALTERNATIVELY
+    // _at->~T();
+    // new(&buffer[i * sizeof(T)]) T(std::move(item));
+  }
 
-class S{
-    public:
-    S() {
-        std::cout << "S()" << std::endl;
-        
+
+  ~StaticStorage() {
+    for(size_t i = 0; i < stack_count; i++) {
+      reinterpret_cast<T*>(buffer + (i * sizeof(T)))->~T();
     }
-    
-    void d() {
-        
-    }
-    
-    ~S() {
-std::cout << "~S()" << std::endl;
-        
-        
-    }
-    
-};
+  }
 
-int main() {
-    using SP = S*;
-    
-    S* s = new S;
-    
-    s.~SP();
-    
-    
-
-    return 0;
-}
-
-#include <iostream>
-
-class S {
-    public:
-    int i { 0 };
-    S() {}
-    S(int i) : i{i} {}
-
-
-
-    void print() __attribute__((noinline)) {
-        std::cout << "print()" << std::endl;
-
-        std::cout << i << std::endl;
-
-        return;
-    }
-
-    // Destructor or any function with no body once inlined, it becomes a NOP (since it can take one cycle) at O0 level optimizations but from O1 on, it is optimized/filtered out altogether
-    ~S() __attribute__((always_inline)) {
-
-    }
 
 };
 
-int main() {
+#define _storage_add(storage, item, T) \
+    new(&storage.buffer[storage.stack_count * sizeof(T)]) item; \
+    storage.stack_count++;
 
-    volatile int i = 10;
-
-    S s = S(i);
-
-    s.print();
-
-
-    return 0;
-}
-
-*/
 
 class S {
 
@@ -130,6 +97,11 @@ class S {
 
     S&operator=(const S& s) {
       std::cout << "const ref& operator=" << std::endl;
+
+      if(a != nullptr) {
+        delete a;
+      }
+
       a = new int(*s.a);
 
       return *this;
@@ -137,6 +109,11 @@ class S {
 
     S& operator=(S&& s) {
       std::cout << "operator=" << std::endl;
+
+      if(a != nullptr) {
+        delete a;
+      }
+
       a = s.a;
 
       s.a = nullptr;
@@ -162,7 +139,9 @@ struct S1 {
     int i1 { 0 };
     int i2 { 0 };
 
-    S1(int) {
+    S1(int i) {
+        i1 = i;
+        i2 = i;
     }
 
     S1() {
@@ -172,14 +151,20 @@ struct S1 {
     ~S1() 
     {
         // delete &i1; // NOW THE DESTRUCTOR CALL/INVOCATION WON'T BE OPTIMIZED OUT AS DETAILED OUT BELOW
-        
+        // OR
+        // std::cout << i1 << std::endl;
     }
 
 };
 
+void _print() {
+    std::cout << 1 << std::endl;
+}
+
 int main() {
 
 /*
+-O1
 .L2:
         mov     DWORD PTR [rdx], 0
         mov     DWORD PTR [rdx+4], 0
@@ -214,6 +199,40 @@ int main() {
 
     // deallocate
     ::operator delete(s);
+  }
+
+
+/*
+-O3
+.L13:
+        movd    xmm1, eax
+        mov     ecx, DWORD PTR [rsp+12]
+        add     eax, 1
+        add     rdx, 8
+        pshufd  xmm0, xmm1, 0xe0
+        movq    QWORD PTR [rdx-8], xmm0
+        cmp     ecx, eax
+        jg      .L13
+.L12:
+        call    _print()
+        xor     eax, eax
+        add     rsp, 72
+        ret
+*/
+  {
+    {
+
+        StaticStorage<S1, 5> _list;
+
+        volatile int _s = 5;
+        for(int i = 0; i < _s; i++) {
+            _storage_add(_list, S1(i), S1);
+        }
+        // ~StaticStorage() optimized out as the while(start != end) above
+    }
+
+    _print(); // ADDED TO DETERMINE THE ~StaticStorage() and if it is called
+
   }
 
   return 0;
