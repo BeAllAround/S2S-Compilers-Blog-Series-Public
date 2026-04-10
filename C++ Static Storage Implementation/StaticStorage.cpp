@@ -173,6 +173,8 @@ int main1() {
 
   // S s = std::move(storage.pop()); // OK, ACTUALLY
   // assert(*s.i_ptr == 3);
+  // assert(*storage.pop().i_ptr == 3); // LEAK
+  
   assert(*storage.at(0).i_ptr == 3);
 
   return 0;
