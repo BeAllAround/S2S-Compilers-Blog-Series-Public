@@ -66,8 +66,6 @@ inline void* cpp_realloc(size_t c, stbds_array_header* old, size_t new_size) {
 }
 
 
-
-
 template<class T, size_t Size>
 class StaticStorage {
   public:
@@ -97,14 +95,30 @@ class StaticStorage {
 
 
   // T* pop();
-
-  T& pop() {
+  // NOTE: POP FOR STATIC STORAGE IS ILL_ADVISED, RESULTING IN MEMORY LEAKS (EVEN WHEN THERE IS A CAST, WE ARE STILL POINTINT TO UCHAR BUFFER)
+  /*
+  T& pop() { // SAME GOES FOR const T&
     stack_count--;
-    return *reinterpret_cast<T*>(buffer + ( stack_count * sizeof(T)));
+    T& popped = *reinterpret_cast<T*>(buffer + ( stack_count * sizeof(T)));
+
+    // *reinterpret_cast<T*>(buffer + ( stack_count * sizeof(T))) = T();
+
+
+    return popped;
+  }
+  */
+
+  const T& at(size_t i) {
+    return *reinterpret_cast<T*>(buffer + ( i * sizeof(T)));
   }
 
-  T&at(size_t i) {
-    return *reinterpret_cast<T*>(buffer + ( i * sizeof(T)));
+  // TODO: WRAP UP IN A MACRO JUST LIKE _storage_add
+  void insert(size_t i, T&& item) {
+    T* _at = reinterpret_cast<T*>(buffer + ( i * sizeof(T)));
+    *_at = std::move(item);
+    // ALTERNATIVELY
+    // _at->~T();
+    // new(&buffer[i * sizeof(T)]) T(std::move(item));
   }
 
 
@@ -116,6 +130,8 @@ class StaticStorage {
 
 
 };
+
+
 
 
 #define _storage_add(storage, item, T) \
@@ -276,7 +292,7 @@ int main() {
         // std::cout << stbds_header(arr)->length << std::endl;
 
         // arrpush
-        // arrput(arr, S(0));
+        // arrput(arr, S(0)); // NOTE: Use of uninitialised value of size 8; Conditional jump or move depends on uninitialised value(s)
         arrpush_new_place(arr, S(10));
 
 
