@@ -36,8 +36,8 @@ void runTest(int input[], int n) {
     // Your implementation
     _quickSort(actual, 0, n - 1);
 
-    // printArray(expected, n);
-    // printArray(actual, n);
+    printArray(expected, n);
+    printArray(actual, n);
 
     // Compare arrays
     for (int i = 0; i < n; i++) {
@@ -156,56 +156,32 @@ inline int partition(int* arr, int low, int high)
 /*
 quickSort(int*, int, int):
         cmp     esi, edx
-        jge     .L7
-        push    r12
+        jl      .L13
+        ret
+.L13:
+        push    r15
+        push    r14 # push vars: pi
         push    rbp
         push    rbx
-        mov     rbp, rdi
-        mov     r12d, edx
-        movsx   rax, edx
-        lea     r10, [rdi+rax*4]
-        mov     r8d, DWORD PTR [r10]
-        lea     ebx, [rsi-1]
-        movsx   rcx, esi
-        lea     rax, [rdi+rcx*4]
-        sub     edx, esi
-        add     rdx, rcx
-        lea     rdi, [rdi+rdx*4]
-        jmp     .L4
-.L3:
-        add     rax, 4
-        cmp     rax, rdi
-        je      .L10
-.L4:
-        mov     edx, DWORD PTR [rax]
-        cmp     r8d, edx
-        jle     .L3
-        add     ebx, 1
-        movsx   rcx, ebx
-        lea     rcx, [rbp+0+rcx*4]
-        mov     r9d, DWORD PTR [rcx]
-        mov     DWORD PTR [rcx], edx
-        mov     DWORD PTR [rax], r9d
-        jmp     .L3
-.L10:
-        movsx   rax, ebx
-        lea     rax, [rbp+4+rax*4]
-        mov     edx, DWORD PTR [rax]
-        mov     ecx, DWORD PTR [r10]
-        mov     DWORD PTR [rax], ecx
-        mov     DWORD PTR [r10], edx
+        sub     rsp, 8
+        mov     ebp, esi
+        mov     ebx, edx
+        mov     r14, rdi
+        call    partition(int*, int, int)
+        mov     r15d, eax
+        lea     edx, [rax-1]
+        mov     esi, ebp
+        mov     rdi, r14
+        call    quickSort(int*, int, int)
+        lea     esi, [r15+1]
         mov     edx, ebx
-        mov     rdi, rbp
+        mov     rdi, r14
         call    quickSort(int*, int, int)
-        lea     esi, [rbx+2]
-        mov     edx, r12d
-        mov     rdi, rbp
-        call    quickSort(int*, int, int)
+        add     rsp, 8
         pop     rbx
         pop     rbp
-        pop     r12
-        ret
-.L7:
+        pop     r14
+        pop     r15
         ret
 */
 
