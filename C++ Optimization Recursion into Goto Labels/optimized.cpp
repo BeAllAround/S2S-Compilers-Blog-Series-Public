@@ -252,6 +252,8 @@ int _sum_tree(const shared_ptr<TreeNode>& _node) {
 
     CallFrame initial_call = CallFrame();
     initial_call.args.node = &_node;
+    initial_call.ret.origin = &&_done;
+
     // PUSH
     _storage_push(stack, CallFrame(std::move(initial_call)), CallFrame);
 
@@ -341,11 +343,13 @@ int _sum_tree(const shared_ptr<TreeNode>& _node) {
         // pop rbx
         stack.pop();
 
+        /*
         // NOTE: INITIAL PUSH ON LINE 137
         if(stack.stack_count == 0) {
             goto _done;
             // return;
         }
+        */
 
         // std::cout << "stack_c: " << stack_c << std::endl;
 
