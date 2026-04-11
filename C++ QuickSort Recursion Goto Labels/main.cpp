@@ -207,7 +207,7 @@ struct CallFrame {
 
 	  // Body Variables such as pi that need to be in the current call frame as well. See void quickSort(int*, int, int) above
 	  struct Body {
-		  int pi;
+		  int pi { 0 };
 	  } vars;
 
 
@@ -225,6 +225,8 @@ struct CallFrame {
         args.low = other.args.low;
         args.high = other.args.high;
 
+        vars.pi = other.vars.pi;
+
         ret.origin = other.ret.origin;
     }
 
@@ -233,6 +235,9 @@ struct CallFrame {
         args.arr = other.args.arr;
         args.low = other.args.low;
         args.high = other.args.high;
+
+        // NOTE: NOT NEEDED since the stack.last() will always be correctly mutated beforehand. See below
+        vars.pi = other.vars.pi;
 
         ret.origin = other.ret.origin;
     }
@@ -243,6 +248,9 @@ struct CallFrame {
         args.low = other.args.low;
         args.high = other.args.high;
 
+        vars.pi = other.vars.pi;
+
+
         ret.origin = other.ret.origin;
 
         return *this;
@@ -252,6 +260,8 @@ struct CallFrame {
         args.arr = other.args.arr;
         args.low = other.args.low;
         args.high = other.args.high;
+
+        vars.pi = other.vars.pi;
 
         ret.origin = other.ret.origin;
 
