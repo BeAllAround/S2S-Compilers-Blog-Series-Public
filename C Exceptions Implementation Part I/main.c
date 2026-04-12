@@ -1,8 +1,18 @@
+/* C implementation QuickSort */
+// Kudos to https://gist.github.com/adwiteeya3/f1797534506be672b591f465c3366643
+
 #include <stdio.h>
 
 #include <stdlib.h>
 
 #include <stdint.h>
+
+/*
+ * NOTE:
+ * Performance When Thrown (The Exceptional Path)
+ * Throwing an exception is orders of magnitude slower than returning an error code.
+ * Cost: Throwing can be 100x to 1,000x slower than a standard function return.
+*/
 
 
 
