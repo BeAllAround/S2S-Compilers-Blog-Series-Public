@@ -78,7 +78,7 @@ typedef struct VariantValue {
 static inline VariantValue makeVariantValue(const char* excp_message) {
     VariantValue val = {};
 
-    val.value.excp_message = excp_message; // NOTE: WE CAN ALSO USE NULL TO CHECK FOR CONST CHAR* AND OTHER TYPE ALLOCATED ON HEAP
+    val.value.excp_message = excp_message; // NOTE: WE CAN ALSO USE NULL TO CHECK FOR CONST CHAR* AND OTHER TYPE ALLOCATED ON HEAP - IF AND ONLY IF WE HAVE A VOID-RETURNING FUNCTION. See the comment above.
 
     return val;
 
