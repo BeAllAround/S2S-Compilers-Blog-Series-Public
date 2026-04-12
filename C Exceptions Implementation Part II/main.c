@@ -108,8 +108,8 @@ void free_string(char **p) {
 
 static int _call_number = 0;
 
-#define CATCH(v) if(v.err_flag == _true)
-#define TRY else
+#define TRY(v) if(v.err_flag != _true)
+#define CATCH else
 
 #define __THROWS__
 
@@ -244,12 +244,23 @@ int main() {
 
 	    VariantValue value = f3();
 
+        /*
+        // NOTE: USED NOT EQUAL TO FLIP THE TWO IN THE RIGHT/COMMON ORDER
         CATCH(value) {
             // DO SOMETHING IN THE CATCH BLOCK
             printf("Exception (\"%s\") thrown!\n", value.value.excp_message);
 
         } TRY {
 	        printf("f3() returned  %d \n", value.value.ret_value);
+        }
+        */
+
+        TRY(value) {
+	        printf("f3() returned  %d \n", value.value.ret_value);
+        }
+        CATCH {
+            // DO SOMETHING IN THE CATCH BLOCK
+            printf("Exception (\"%s\") thrown!\n", value.value.excp_message);
         }
 
 
