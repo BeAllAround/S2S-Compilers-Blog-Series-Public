@@ -144,7 +144,7 @@ void print_numbers(int count, ...) {
         // std::cout << val.i_ptr << std::endl;
         // std::cout << va_arg(args, S).i_ptr << std::endl;
         _storage_add(_arr, 
-        S(static_cast<S>(std::move(va_arg(args, S)))),
+        S(static_cast<S>(std::move(va_arg(args, S)))), // Semantically, same as the _print below, meaning: (S(S&&), ~S()) for each item
         S);
 
 
