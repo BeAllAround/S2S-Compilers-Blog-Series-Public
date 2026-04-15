@@ -7,6 +7,9 @@
 
 
 int main() {
+  /*
+  Low level assembly written in C - assembly in C line-for-line interpretation
+  */
 
   {
        /*
