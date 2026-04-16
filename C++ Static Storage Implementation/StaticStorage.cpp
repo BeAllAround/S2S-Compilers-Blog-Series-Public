@@ -76,7 +76,8 @@ int main0() {
 
 
 
-  defer: {
+  defer: __attribute__((cold, unused));
+  {
     // Invoke Destructors
     for(size_t i = 0; i < stack_c; i++) {
       reinterpret_cast<S*>(buffer + (i * sizeof(S)))->~S();
@@ -86,11 +87,14 @@ int main0() {
   return 0;
 }
 
-template<class T, size_t Size>
+template<class T, size_t Size, size_t Align = alignof(T)>
 class StaticStorage {
   public:
   using ItemType = T;
-  unsigned char buffer[sizeof(T) * Size];
+
+  alignas(Align) unsigned char buffer[sizeof(T) * Size];
+
+  // unsigned char buffer[sizeof(T) * Size];
   size_t stack_count = 0;
 
   StaticStorage() {}
@@ -160,9 +164,20 @@ class StaticStorage {
 
 int main1() {
 
+  std::cout << alignof(S) << std::endl;
+  std::cout << sizeof(S) << std::endl;
+  // std::cout << alignas(alignof(S)) << std::endl;
+
 
 
   StaticStorage<S, 10> storage;
+  // (sizeof(storage) == 88) without alignas(alignof(T))
+
+  std::cout << sizeof(storage) << std::endl;
+
+  // typename decltype(storage)::ItemType s4;
+
+  // StaticStorage<S, 10>::ItemType s4;
 
   // storage.add(S(1));
   // storage.add(S(2));
