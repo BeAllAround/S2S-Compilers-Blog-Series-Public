@@ -107,7 +107,7 @@ class S {
 
   S& copy(S& other) {
     std::cout << "S&copy(S&)" << std::endl;
-    if(i_ptr != nullptr) {
+    if(i_ptr != nullptr) { // FIXME: ONLY NEEDED FOR COPY ASSIGNMENT. NOT THE MOVE CONSTRUCTOR. TODO: REFACTOR
       delete i_ptr;
     }
     i_ptr = new int(*other.i_ptr);
