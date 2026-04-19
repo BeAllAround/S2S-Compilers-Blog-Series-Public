@@ -194,5 +194,54 @@ int main() {
     // assert(s_move.i_ptr == nullptr);
   }
 
+    // DIFFERENT VALGRIND REPORTS FOR DIFFERENT LEVELS OF OPTIMIZATIONS: -O0, -O1, -O2, -O3
+    {
+      int n = 0;
+      address_of_aggressive<S>(S(15));
+      address_of_aggressive<S>(S(16)); // ~S() at the end of the expression: semi colon
+      /*
+      S(int)0x7fff1728d930
+      ~S()0x7fff1728d930
+      S(int)0x7fff1728d930
+      ~S()0x7fff1728d930
+      */
+
+      address_of_aggressive<int>(10);
+      address_of_aggressive< std::vector<int> >(std::vector<int>());
+
+      address_of_aggressive<int>(n); // OK
+
+      S* s = address_of_aggressive<S>(S(15));
+      S* s1;
+/*
+main.cpp:208:43: note: unnamed temporary defined here
+  208 |       S* s = address_of_aggressive<S>(S(15));
+      |                                           ^
+In file included from /usr/include/c++/13/cassert:44,
+                 from main.cpp:5:
+main.cpp:215:17: warning: using a dangling pointer to an unnamed temporary [-Wdangling-pointer=]
+  215 |       assert(s->i_ptr == nullptr);
+      |              ~~~^~~~~
+main.cpp:208:43: note: unnamed temporary defined here
+  208 |       S* s = address_of_aggressive<S>(S(15));
+
+*/
+
+      std::cout << "address_of: " << s << std::endl;
+      std::cout << "address_of: " << s1 << std::endl; // Compare the outputs for -O0, -O1, -O2, -O3
+
+      // NOTE: ONLY PASSES FOR -O0 level optimizations. It fails for the rest. But that (-O0) is not clean for "valgrind -s ./out.out" either
+      // assert(s->i_ptr == nullptr);
+      // assert(s == address_of_aggressive(S(10))); // VALGRIND WARNINGS AND ERRORS BUT IT DOES PASS FOR the -O0 level optimizations as the temporary rvalue appears to be at the same memory address/region.
+      // std::cout << s->i_ptr << std::endl; // Compare the outputs for -O0, -O1, -O2, -O3
+      // std::cout << *s->i_ptr << std::endl; // Compare the outputs for -O0, -O1, -O2, -O3
+    }
+
+    {
+      _assert_S__ptr(address_of_aggressive<S>(S(100)), 100);
+      _assert_S__ptr(address_of_aggressive<S>(S(101)), 101);
+
+    }
+
     return 0;
 }
