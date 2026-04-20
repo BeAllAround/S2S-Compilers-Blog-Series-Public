@@ -4,24 +4,26 @@
 
 #include <cassert>
 
+#include <stdio.h>
 #include <stdint.h> // uintptr_t
 
-// -O3
+// -O3 -Wall
 
 #define nullptr NULL
 
 namespace std {
-    [[noreturn]] void __throw_bad_cast() { 
+    // [[noreturn]]
+      void __throw_bad_cast() { 
         printf("__throw_bad_cast THROWN!\n");
         throw "___bad_cast()";
     }
 }
 
 /*
-void operator delete(void* ptr) noexcept {
+void operator delete(void* ptr, size_t) noexcept {
     std::cout << "Custom DELETE OVERLOAD " << ptr << std::endl;
     // ::operator delete(ptr); // Stack overflow
-    free(ptr);
+    // free(ptr);
 }
 */
 
@@ -139,8 +141,8 @@ class S {
 
 // NOTE: Preventing the compiler from the inlining for purposes of dissecting the assembly output more efficiently
 void S::clean_up() {
-    // std::cout << "clean_up()" << std::endl;
-    printf("clean_up()\n"); // NEVER REACHED FOR -O3 due to one of the conditional check/jump below. THIS IS ONLY THE CASE FOR printf
+    // std::cout << "clean_up()" << std::endl; // OK. CAN SEE "clean_up()" in the stdout
+    printf("clean_up()\n"); // IT SEEMS LIKE IT IS NEVER REACHED FOR -O3 due to one of the conditional check/jump below. THIS IS ONLY THE CASE FOR printf. THIS IS LIKELY THE CASE BECAUSE IT BECOMES empty string due to OFFSET FLAT:std::ctype<char>::do_widen(char) const.
     if(i_ptr != nullptr) {
       delete i_ptr;
       i_ptr = nullptr;
@@ -200,7 +202,7 @@ S::~S() (.cold):
 
 */
 S::~S() {
-    std::cout << "~S()" << std::endl;
+    std::cout << "~S()" << this << std::endl;
     /*
     printf("~S()");
     printf("%p\n", this);
@@ -333,11 +335,11 @@ main.cpp:208:43: note: unnamed temporary defined here
 }
 
 int main02() {
-  // NOTE: OK for the -O0 level optimizations BUT "Invalid free() / delete / delete[] / realloc()" for the -O1, -O2, -O3
+  // NOTE: OK for the -O0 (and -O1 depending on the compiler version) level optimizations BUT "Invalid free() / delete / delete[] / realloc()" for the -O2, -O3
   S s (10);
 
   address_of_aggressive(s)->~S();
-  // address_of_aggressive(s)->clean_up(); // OK
+  // address_of_aggressive(s)->clean_up(); // OK at all times
 
   std::cout << "s.i_ptr " << s.i_ptr << std::endl;
 
