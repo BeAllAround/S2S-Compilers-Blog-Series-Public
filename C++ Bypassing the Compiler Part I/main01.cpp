@@ -19,7 +19,16 @@ namespace std {
     }
 }
 
+
+
 /*
+// I TYPICALLY DETERMINE WHICH ONE IS GONNA BE CALLED BY THE COMPILER ASSEMBLY OUTPUT
+// void operator delete(void* ptr) noexcept {
+    // std::cout << "Custom DELETE OVERLOAD " << ptr << std::endl;
+    // ::operator delete(ptr); // Stack overflow
+    // free(ptr);
+// }
+
 void operator delete(void* ptr, size_t) noexcept {
     std::cout << "Custom DELETE OVERLOAD " << ptr << std::endl;
     // ::operator delete(ptr); // Stack overflow
