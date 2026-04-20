@@ -6,10 +6,24 @@
 
 #include <stdint.h> // uintptr_t
 
-// -O0 -Wall --std=c++03
+// -O3
 
 #define nullptr NULL
 
+namespace std {
+    [[noreturn]] void __throw_bad_cast() { 
+        printf("__throw_bad_cast THROWN!\n");
+        throw "___bad_cast()";
+    }
+}
+
+/*
+void operator delete(void* ptr) noexcept {
+    std::cout << "Custom DELETE OVERLOAD " << ptr << std::endl;
+    // ::operator delete(ptr); // Stack overflow
+    free(ptr);
+}
+*/
 
 class S;
 
@@ -116,17 +130,83 @@ class S {
     return *this;
   }
 
-  ~S() {
-    std::cout << "~S()" << this << std::endl;
+  void clean_up();
 
+
+  ~S();
+
+};
+
+// NOTE: Preventing the compiler from the inlining for purposes of dissecting the assembly output more efficiently
+void S::clean_up() {
+    // std::cout << "clean_up()" << std::endl;
+    printf("clean_up()\n"); // NEVER REACHED FOR -O3 due to one of the conditional check/jump below. THIS IS ONLY THE CASE FOR printf
     if(i_ptr != nullptr) {
       delete i_ptr;
       i_ptr = nullptr;
-
     }
 
-  }
-};
+}
+
+/*
+-O3
+...
+        mov     rbx, rax
+        mov     rax, QWORD PTR [rax]
+        mov     rax, QWORD PTR [rax-24]
+        mov     rdi, QWORD PTR [rbx+240+rax]
+        test    rdi, rdi
+        je      .L20
+        cmp     BYTE PTR [rdi+56], 0
+        je      .L15
+        movsx   esi, BYTE PTR [rdi+67]
+.L16:
+        mov     rdi, rbx
+        call    std::ostream::put(char)
+        mov     rdi, rax
+        call    std::ostream::flush()
+        mov     edi, OFFSET FLAT:.LC5
+        call    puts
+        mov     rdi, QWORD PTR [rbp+0]
+        test    rdi, rdi
+        je      .L13
+        add     rsp, 24
+        mov     esi, 4
+        pop     rbx
+        pop     rbp
+        jmp     operator delete(void*, unsigned long)
+.L15:
+        mov     QWORD PTR [rsp+8], rdi
+        call    std::ctype<char>::_M_widen_init() const
+        mov     rdi, QWORD PTR [rsp+8]
+        mov     esi, 10
+        mov     rax, QWORD PTR [rdi]
+        mov     rax, QWORD PTR [rax+48]
+        cmp     rax, OFFSET FLAT:std::ctype<char>::do_widen(char) const
+        je      .L16
+        call    rax
+        movsx   esi, al
+        jmp     .L16
+.L13:
+        add     rsp, 24
+        pop     rbx
+        pop     rbp
+        ret
+S::~S() (.cold):
+.L20:
+        call    std::__throw_bad_cast() # NOTE: It is NOT THIS CALL THAT THROWS DOUBLE FREE. IT IS OPERATOR DELETE. THAT'S WHY I OVERLOADED THAT GLOBAL OPERATOR ABOVE. IN ORDER TO SEE THIS, THE LIBRARY FUNCTIONS MUST NOT BE FILTERED OUT FROM THE ASSEMBLY OUTPUT. Also note that this cannot be caught.
+        .set    S::~S() [complete object destructor],S::~S() [base object destructor]
+
+
+*/
+S::~S() {
+    std::cout << "~S()" << std::endl;
+    /*
+    printf("~S()");
+    printf("%p\n", this);
+    */
+    clean_up();
+}
 
 
 template<class T>
@@ -143,7 +223,8 @@ void _assert_S__ptr(S* s, const int i) {
 }
 
 
-int main() {
+int main00() {
+
   {
 
     S s = 1;
@@ -194,6 +275,11 @@ int main() {
     // assert(s_move.i_ptr == nullptr);
   }
 
+  return 0;
+
+}
+
+int main01() {
     // DIFFERENT VALGRIND REPORTS FOR DIFFERENT LEVELS OF OPTIMIZATIONS: -O0, -O1, -O2, -O3
     {
       int n = 0;
@@ -243,5 +329,26 @@ main.cpp:208:43: note: unnamed temporary defined here
 
     }
 
-    return 0;
+  return 0;
 }
+
+int main02() {
+  // NOTE: OK for the -O0 level optimizations BUT "Invalid free() / delete / delete[] / realloc()" for the -O1, -O2, -O3
+  S s (10);
+
+  address_of_aggressive(s)->~S();
+  // address_of_aggressive(s)->clean_up(); // OK
+
+  std::cout << "s.i_ptr " << s.i_ptr << std::endl;
+
+  return 0;
+
+}
+
+int main() {
+
+  main02();
+
+  return 0;
+}
+
