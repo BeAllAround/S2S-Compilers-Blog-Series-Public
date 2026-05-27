@@ -83,6 +83,7 @@ class In {
 
 	template<class T>
 		In(const T&in) {
+      // NOTE: TAKES A SNAPSHOT OF YOUR FUNCTION AND PASSES IT AROUND AS IT DOESN'T ALTER THE FUNCTION TYPE SIGNATURE
 			func = &Invoker<T>::invoke;
 		}
 
@@ -106,9 +107,11 @@ int main() {
   // _i.invoke();
 
   /*
-   * Works without virtual since the deleter is essentially the following for make_shared
-   * ((Derived*)b)->~Derived();
-   * ::operator delete((Derived*)b);
+   * Works without virtual since the deleter is essentially the following for make_shared at compile time.
+   * void _deleter<Derived>() {
+   *  ((Derived*)b)->~Derived();
+   *  ::operator delete((Derived*)b);
+   * }
    */
 
   std::cout << "sizeof(Base) " << sizeof(Base) << std::endl;
