@@ -231,6 +231,11 @@ int main2() {
 
 
 int main() {
+  // This const ref is cleaned up just fine as xvalues are already stored into a var for C++ if we think about it at the S2S level: C -> C++ as discussed in the "C++ Bypassing the Compiler Part I" at "21:00"
+  // See: https://youtu.be/g8vWw6MN8RQ?t=1260
+  // const S& s = S(22);
+  // assert(*(s.i_ptr) == 22);
+
   /// return main1();
   return main2();
 }
