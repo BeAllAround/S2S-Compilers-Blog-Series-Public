@@ -50,7 +50,7 @@ class S1 {
     // S1() = default;
     S1() {}
 
-    // S1(S&& s) : s{std::move(s)} {} // NOTE: The "S s{S()};" declaration ignored above in this case
+    // S1(S&& s) : s{std::move(s)} {} // NOTE: The "S s{S()};" declaration ignored above in this "direct initializer" case
 
     ~S1(){
 
