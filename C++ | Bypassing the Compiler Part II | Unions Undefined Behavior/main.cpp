@@ -50,7 +50,7 @@ class S1 {
     // S1() = default;
     S1() {}
 
-    // S1(S&& s) : s{std::move(s)} {}
+    // S1(S&& s) : s{std::move(s)} {} // NOTE: The "S s{S()};" declaration ignored above in this case
 
     ~S1(){
 
@@ -73,6 +73,10 @@ class UnionClass {
         // new (&s) S1(); // YOU CAN ALSO LITERALLY DO THIS
         new (&s1) S1();
         s1.ptr = _int;
+        // s1.s.ptr = _int;
+    }
+
+    UnionClass(const UnionClass&) {
     }
 
 
@@ -107,6 +111,7 @@ int main() {
         std::cout << u1.s.ptr << std::endl;
         std::cout << u2.s.ptr << std::endl;
 
+        std::cout << *(u2.s.ptr) << std::endl;
         std::cout << *(u2.s1.ptr) << std::endl;
 
         // std::cout << *(u2.s1.ptr) << std::endl;
@@ -116,6 +121,8 @@ int main() {
 
         // std::cout << u2.s.ptr << std::endl;
         // std::cout << u3.s.ptr << std::endl;
+        
+        delete p;
     }
 
 /*
