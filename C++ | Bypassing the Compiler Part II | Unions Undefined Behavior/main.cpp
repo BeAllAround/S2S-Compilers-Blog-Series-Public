@@ -76,13 +76,10 @@ class UnionClass {
         // s1.s.ptr = _int;
     }
 
-    UnionClass(const UnionClass&) {
-    }
+    UnionClass(const UnionClass&) {}
 
 
-    ~UnionClass() {
-
-    }
+    ~UnionClass() {}
 
 };
 
