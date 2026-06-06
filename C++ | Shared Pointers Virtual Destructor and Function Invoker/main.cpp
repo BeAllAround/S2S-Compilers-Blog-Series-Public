@@ -108,7 +108,7 @@ int main() {
 
   /*
    * Works without virtual since the deleter is essentially the following for make_shared at compile time.
-   * void _deleter<Derived>() {
+   * void _deleter<Derived>(void* b) {
    *  ((Derived*)b)->~Derived();
    *  ::operator delete((Derived*)b);
    * }
