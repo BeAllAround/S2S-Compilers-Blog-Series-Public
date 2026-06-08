@@ -14,7 +14,7 @@ class Base {
 
 class Derived {
     public:
-    Base base {}; // NOTE: Base base() makes sizeof(Derived) 4 - what the shoot?
+    Base base {}; // NOTE: Base base() makes sizeof(Derived) 4 - very interesting!
     int ii {10};
 };
 
