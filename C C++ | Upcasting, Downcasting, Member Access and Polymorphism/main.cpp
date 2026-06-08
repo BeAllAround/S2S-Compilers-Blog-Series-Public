@@ -32,9 +32,11 @@ int main() {
     Base* b = (Base*)(new Derived());
     
 
+    // This is downcasting
     std::cout << (((Derived*)b)->ii) << std::endl; // 10
 
-    std::cout << (b->i) << std::endl; // 2
+    // This is upcasting (if b is Derived*)
+    std::cout << (((Base*)b)->i) << std::endl; // 2
 
 
     delete (Derived*) b;
