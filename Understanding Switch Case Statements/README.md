@@ -2,8 +2,6 @@
 
 # S2S Compilers: Understanding Switch Case Statements
 
-| ![Voxgig](https://avatars.githubusercontent.com/u/33902825?s=130&v=4) | This blog is sponsored and supported by [Voxgig](https://www.voxgig.com). |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
 
 | ![Decl](https://raw.githubusercontent.com/BeAllAround/S2S-Compilers-Blog-Series-Public/refs/heads/main/Logo-DeCL_black-icon01.png) | Motivated and inspired by Decl. In development and soon to be open-sourced. |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -61,7 +59,7 @@
 
 ## About Author
 
-My name is Aleksandar Milenkovic. I am a senior software engineer at Voxgig and a self-driven coder, an autodidact, that creates software and improves its quality at any level.
+My name is Aleksandar Milenkovic. I am a senior software engineer and a self-driven coder, an autodidact, that creates software and improves its quality at any level.
 
 If you have any feedback or questions, feel free to reach out to me via [LinkedIn](https://www.linkedin.com/in/aleksandar-milenkovic-8a5095217/).
 
@@ -86,22 +84,6 @@ Even if you are not interested in S2S Compilers as a C/C++ developer, this blog 
 This blog series is named **S2S (Source-to-source) Compilers** as all of the code and content is motivated by building a S2S Compiler that takes in the source language and translates it into C++. By benchmarking and analyzing the target source (C++), I have realized how many improvements there are to make. More on the motivation in the following section.
 
 
-
-## Motivation
-
-As a senior software engineer for Voxgig, we have been building SDKs in various programming languages. For our utilities, this brought about a lot of performance concerns as we port from one language to another, we would try to make the two and more implementations as close as possible side by side. That led us into the waters of language-specific implementations where we have pushed to use the most out of each language so as to make it as performant as possible for the developer using the SDK in the respective language. For example, the C++ implementation is going to have more focus on the performance since it is harder to optimize code compared to Python, Ruby, or JavaScript.
-
-At the same point in time while at Voxgig, I have been building a dynamic programming language that transpiles into C++, I have been doing a lot of research and have benchmarked plenty of C++ code in order to hit the maximum runtime performance of the target language (C++).
-
-All of this work was motivated by the dynamic programming language called, Decl; soon to be open-sourced.
-
-To be frank, the reason for C++ as the target language is that it is much easier to build a garbage collector by just implementing reference counter in the wrapper class. The state of dynamically allocated objects is determined by implicit destructors of C++, again, with the reference counting implementation. However, we won't cover any of that in this blog but stay ready for the next instalment :).
-
-All of the knowledge that I have acquired turned out to be very useful for me and, most of all, our team.
-
-If you are interested in building SDKs for one or even more programming languages, please contact [Voxgig](https://www.voxgig.com/).
-
-Again, huge thanks to Voxgig for enabling me to put in the time for this research and writing the blog.
 
 
 

@@ -2,9 +2,6 @@
 
 
 
-| ![Voxgig](https://avatars.githubusercontent.com/u/33902825?s=130&v=4) | This blog is sponsored and supported by [Voxgig](https://www.voxgig.com). |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-
 | ![Decl](https://raw.githubusercontent.com/BeAllAround/S2S-Compilers-Blog-Series-Public/refs/heads/main/Logo-DeCL_black-icon01.png) | Motivated and inspired by Decl. In development and soon to be open-sourced. |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 
@@ -27,7 +24,7 @@
 
 ## About Author
 
-My name is Aleksandar Milenkovic. I am a senior software engineer at Voxgig and a self-driven coder, an autodidact, that creates software and improves its quality at any level.
+My name is Aleksandar Milenkovic. I am a senior software engineer and a self-driven coder, an autodidact, that creates software and improves its quality at any level.
 
 If you have any feedback or questions, feel free to reach out to me via [LinkedIn](https://www.linkedin.com/in/aleksandar-milenkovic-8a5095217/).
 
