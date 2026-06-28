@@ -60,7 +60,7 @@ void restore_block() {
 
 unsigned char* makeObj(int ii, const char* str) {
 /*
-// NOTE: SHOULD BE LOCAL TO THE FUNCTION FOR THE ACCURATE IMPLEMENTATION
+// NOTE: SHOULD BE LOCAL TO THE FUNCTION FOR THE ACCURATE IMPLEMENTATION AND SUB LOCAL RESTORE
 unsigned char obj_stack[100][
                                 sizeof(const char*) 
                                 + sizeof(int)
