@@ -61,7 +61,10 @@ void restore_block() {
 unsigned char* makeObj(int ii, const char* str) {
 /*
 // NOTE: SHOULD BE LOCAL TO THE FUNCTION FOR THE ACCURATE IMPLEMENTATION AND SUB LOCAL RESTORE
-unsigned char obj_stack[100][
+// WHERE THE NUMBER_OF_STRUCT_INSTANCES REPRESENTS HOW MANY STRUCT INSTANCES WE HAVE IN THE LOCAL FUNCTION
+// struct Obj obj;
+// struct Obj obj1;
+unsigned char obj_stack[NUMBER_OF_STRUCT_INSTANCES][
                                 sizeof(const char*) 
                                 + sizeof(int)
                                 // + padding + alignment
