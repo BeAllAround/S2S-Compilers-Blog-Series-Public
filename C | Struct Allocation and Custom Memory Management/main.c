@@ -65,6 +65,7 @@ unsigned char* makeObj(int ii, const char* str) {
 // FOR EXAMPLE:
 // struct Obj obj;
 // struct Obj obj1;
+// HOWEVER, THE PROBLEM HERE IS, AS SHOWN IN THE VIDEO, THAT WE CAN'T RETURN THIS AS IT IS A LOCAL VARIABLE ADDRESS.
 unsigned char obj_stack[NUMBER_OF_STRUCT_INSTANCES][
                                 sizeof(const char*) 
                                 + sizeof(int)
