@@ -59,6 +59,15 @@ void restore_block() {
 }
 
 unsigned char* makeObj(int ii, const char* str) {
+/*
+// NOTE: SHOULD BE LOCAL TO THE FUNCTION FOR THE ACCURATE IMPLEMENTATION
+unsigned char obj_stack[100][
+                                sizeof(const char*) 
+                                + sizeof(int)
+                                // + padding + alignment
+                                ];
+
+ */
     unsigned char* object = allocate_next_block();
 
     /*
