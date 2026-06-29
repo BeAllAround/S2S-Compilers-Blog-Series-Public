@@ -40,6 +40,21 @@ void create_obj() {
     //return obj;
 }
 
+struct Obj return_obj() {
+    // NOTE IF WE ARE RETURNING THE OBJECT FROM THE FUNCTION SCOPE. THE SUB AND STACK ISN'T ALLOCATED HERE
+    // IT IS ALLOCATED IN THE FUNCTION WHERE IT IS CALLED FROM. See struct "struct Obj o1 = return_obj()" below and THE SUB FOR THE MAIN FUNCTION
+    volatile int ii = 1;
+
+    struct Obj obj = {};
+
+    obj.i = ii; // int i = 1;
+    obj.str = "AAA"; // const char* str = "AAA";
+
+    // printf("create_obj() %p\n", &obj);
+
+    return obj;
+    //return obj;
+}
 
 unsigned char* allocate_next_block() { // Get the next memory block
 /*
@@ -268,6 +283,17 @@ On another system, this could be different
 
   create_obj();
   create_obj();
+
+
+  // Function SCOPE is now:
+  // "main":
+  //      push    rbp     #
+  //      mov     rbp, rsp  #,
+  //      sub     rsp, 144  #,
+  struct Obj o1 = return_obj();
+  struct Obj o2 = return_obj();
+  //struct Obj o3 = return_obj();
+  // return_obj();
 
 
 
