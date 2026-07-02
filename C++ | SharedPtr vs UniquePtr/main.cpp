@@ -17,10 +17,14 @@
  * [Cpu_time_used: 0.083864]
  * [Cpu_time_used: 0.125482]
 
- // NOTE: unique_ptr IS MUCH MORE OPTIMIZIED BY THE COMPILER
+ // NOTE: unique_ptr IS MUCH MORE OPTIMIZIED BY THE COMPILER IN SOME CASES WITHOUT VIOLATILE
+ // NO VIOLATILE
  * g++ main.cpp -o out.out -O1 && ./out.out
  * [Cpu_time_used: 0.000565]
  * [Cpu_time_used: 0.031977]
+ // WITH VIOLATILE
+* [Cpu_time_used: 0.030654]
+* [Cpu_time_used: 0.029465]
  */
 
 
@@ -71,8 +75,8 @@ int main() {
 
   // TALK ABOUT MOVE, COPY CONSTRUCTORS/ASSIGNMENTS
 
-  /*
 
+  /*
   {
     start_time;
 
