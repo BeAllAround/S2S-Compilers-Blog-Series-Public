@@ -49,12 +49,10 @@ class A {
 // static std::vector<int> v;
 
 int main() {
-  /*
-    A a;
+    // A a;
 
-    a.v = std::vector<int>(); // No allocations for the move assignment either!
-    A a1 = std::move(a); // Same goes for the move construtor!
-  */
+    // a.v = std::vector<int>(); // No allocations for the move assignment either!
+    // A a1 = std::move(a); // Same goes for the move construtor!
 
     
   
