@@ -15,7 +15,7 @@
 
 class MyImplt {
     public:
-        int* i;
+        int* i {nullptr};
 
         MyImplt() {
             // i = new int(1);
@@ -70,6 +70,7 @@ int main() {
     // Expensive operation
     for(int i = 0; i < 100; i++) {
         A a;
+        // v.push_back(std::move(a)); // moving it out of the scope
         // a.v.reserve(10); // Equivalent to setUp
     }
     */
