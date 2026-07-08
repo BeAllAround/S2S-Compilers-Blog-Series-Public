@@ -44,6 +44,9 @@ class A {
     }
 
 
+    A(A&& other) : v{std::move(other.v)}, m{std::move(other.m)} {}
+
+
 };
 
 // static std::vector<int> v;
@@ -52,6 +55,7 @@ int main() {
     // A a;
 
     // a.v = std::vector<int>(); // No allocations for the move assignment either!
+    // a.m = std::unordered_map<int, int>(); // No allocations for the move assignment either!
     // A a1 = std::move(a); // Same goes for the move construtor!
 
     
