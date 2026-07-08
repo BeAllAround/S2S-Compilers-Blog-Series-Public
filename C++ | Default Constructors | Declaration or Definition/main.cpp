@@ -35,7 +35,7 @@ class A {
     std::vector<int> v;
     std::unordered_map<int, int> m;
 
-    int i;
+    int i {0};
 
 
     A() : i{1} // OK, It is a primitive after all - or you can just do "int i = 1"
@@ -49,7 +49,15 @@ class A {
 // static std::vector<int> v;
 
 int main() {
-    // A a;
+  /*
+    A a;
+
+    a.v = std::vector<int>(); // No allocations for the move assignment either!
+    A a1 = std::move(a); // Same goes for the move construtor!
+  */
+
+    
+  
 
     // a.m.reserve(10);
 
@@ -70,7 +78,7 @@ int main() {
     // Expensive operation
     for(int i = 0; i < 100; i++) {
         A a;
-        // v.push_back(std::move(a)); // moving it out of the scope
+        // v.push_back(std::move(a)); // E.g. moving it out of the scope
         // a.v.reserve(10); // Equivalent to setUp
     }
     */
