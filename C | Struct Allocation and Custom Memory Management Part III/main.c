@@ -32,6 +32,7 @@ int main() {
     // a.i = 10;
     // a.name = "Alex";
 
+    // register struct A* a_m = (struct A*)malloc(sizeof(struct A)); // NOTE: Stored into the register; push rbp
 
     // struct A* a_m = (struct A*)malloc(sizeof(struct A));
     // struct A* a_m_1 = (struct A*)malloc(sizeof(struct A));
