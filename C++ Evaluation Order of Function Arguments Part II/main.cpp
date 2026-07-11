@@ -1,3 +1,86 @@
+/*
+#include <iostream>
+
+
+
+class S;
+
+class S {
+  public:
+  int* i_ptr { nullptr };
+  S() {
+    std::cout << "S()" << std::endl;
+  }
+
+  S(int i) {
+    std::cout << "S(int)" << std::endl;
+    i_ptr = new int(i);
+  }
+
+  S(const S& other) {
+    std::cout << "S(const S&)" << std::endl;
+    i_ptr = new int(*other.i_ptr);
+  }
+
+  S(S&& other) {
+    std::cout << "S(S&&)" << std::endl;
+    i_ptr = other.i_ptr;
+    other.i_ptr = nullptr;
+  }
+
+
+  S& operator=(const S& other) {
+    std::cout << "S&operator=(const S&)" << std::endl;
+    if(i_ptr != nullptr) {
+      delete i_ptr;
+    }
+    i_ptr = new int(*other.i_ptr);
+    return *this;
+  }
+
+
+  S& operator=(S&& other) {
+    std::cout << "S&operator=(S&&)" << std::endl;
+    if(i_ptr != nullptr) {
+      delete i_ptr;
+    }
+    i_ptr = other.i_ptr;
+    other.i_ptr = nullptr;
+    return *this;
+  }
+
+  ~S() {
+    std::cout << "~S()" << std::endl;
+
+    if(i_ptr != nullptr) {
+      delete i_ptr;
+      i_ptr = nullptr;
+    }
+
+  }
+};
+
+S plus() {
+    S s(1);
+
+    return s;
+}
+
+#define _plus() ({ \
+    plus(); \
+})
+
+
+
+int main() {
+
+    S s = _plus();
+
+    return 0;
+}
+
+*/
+
 #include <iostream>
 
 #define start_time clock_t s_t_a_r_t = clock();
