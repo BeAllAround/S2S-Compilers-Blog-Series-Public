@@ -14,7 +14,9 @@ class StaticStorage {
     char marked;
   };
 
-  alignas(Align) unsigned char buffer[(sizeof(TBlock)) * Size];
+  constexpr static size_t block_size = sizeof(TBlock);
+
+  alignas(Align) unsigned char buffer[block_size * Size];
 
   // unsigned char buffer[sizeof(T) * Size];
   size_t stack_count = 0;
@@ -29,7 +31,6 @@ class StaticStorage {
   StaticStorage& operator=(const StaticStorage&) = delete;
   StaticStorage& operator=(StaticStorage&&) = delete;
 
- constexpr static size_t block_size = sizeof(TBlock);
 
   T* next_block_available() {
     return reinterpret_cast<T*>(buffer + (stack_count * block_size) ); // Block with the marked
