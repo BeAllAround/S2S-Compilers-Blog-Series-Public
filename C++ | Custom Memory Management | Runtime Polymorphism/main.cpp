@@ -33,13 +33,14 @@ class StaticStorage {
 
   T* next_block_available() {
     return reinterpret_cast<T*>(buffer + (stack_count * block_size) ); // Block with the marked
-    // return &((reinterpret_cast<TBlock*>(buffer + (stack_count * block_size) ))->block); // Block with the marked
+    // Essentially, given that the first member is "T block" : return &((reinterpret_cast<TBlock*>(buffer + (stack_count * block_size) ))->block); // Block with the marked
   }
 
   template<class RP> // RP stands for Raw Pointer
   void mark_block(RP* block) {
     unsigned char* raw_block = reinterpret_cast<unsigned char*>(block);
 
+    // NOTE: This cast is possible because the initial memory block came from the sizeof(TBlock) stack
     (reinterpret_cast<TBlock*> (raw_block))->marked = 1; // Note: Block marked!
 
   }
@@ -68,6 +69,7 @@ class StaticStorage {
 
     unsigned char* raw_block = reinterpret_cast<unsigned char*>(block);
 
+    // NOTE: This cast is possible because the initial memory block came from the sizeof(TBlock) stack
     (reinterpret_cast<TBlock*> (raw_block))->marked = 0; // Note: Block un-marked - now freed!
 
     // pop_block();
