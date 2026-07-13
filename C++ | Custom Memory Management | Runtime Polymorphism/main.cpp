@@ -87,7 +87,7 @@ class StaticStorage {
 
   ~StaticStorage() {
 
-    std::cout << "~StaticStorage()::stack_count: " << stack_count << std::endl;
+    std::cout << "START: ~StaticStorage() " << "stack_count: " << stack_count << std::endl;
     for(size_t i = 0; i < stack_count; i++) {
       void* raw_block = buffer + (i * block_size);
 
@@ -102,6 +102,8 @@ class StaticStorage {
 
 
     }
+
+    std::cout << "END: ~StaticStorage() " << std::endl;
   }
 
 
