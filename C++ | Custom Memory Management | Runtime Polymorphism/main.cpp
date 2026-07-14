@@ -84,7 +84,7 @@ class StaticStorage {
     // pop_block();
   }
 
-
+  // This entire implementation is badly overengineered. The only reason for marked is for this destructor essentially. There shouldn't be any destructors. The developer should be responsible for allocating and reallocating or destroying memory - just like on heap. This also eliminates the marked block overhead. Allocating a block should be based on size_t. See the comment below.
   ~StaticStorage() {
 
     std::cout << "START: ~StaticStorage() " << "stack_count: " << stack_count << std::endl;
