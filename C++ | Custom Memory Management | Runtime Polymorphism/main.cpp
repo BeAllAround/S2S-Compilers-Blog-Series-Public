@@ -166,6 +166,7 @@ class Derived : public Base {
 };
 
 
+// NOTE, TODO: THE MEMORY BUFFER SHOULD BE MUCH MORE FLEXIBLE THAN THIS - IT SHOULDN'T BE TYPE SPECIFIC (WITH STATIC SIZE_T). THE MEMORY BLOCK SHOULD BE CARVED OUT BASED ON THE SIZE_T AND THEN THE CAST SHOULD BE APPLIED: JUST LIKE: "void* operator new  ( std::size_t );" IS IMPLEMENTS.
 static StaticStorage<Derived, 100> stack; // NOTE: Stack of Derived specifically
 
 
