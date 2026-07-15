@@ -13,6 +13,12 @@
 
 #define end_time printf("[Cpu_time_used: %f]\n", static_cast < double > (clock() - s_t_a_r_t) / CLOCKS_PER_SEC);
 
+/*
+
+The Rule of Thumb: If your calculated allocation size approaches or exceeds a few hundred kilobytes, abort stack allocation entirely and fall back to heap memory (malloc or new).
+
+*/
+
 
 
 template<size_t Size>
@@ -27,6 +33,7 @@ class CustomMemoryStorage {
 
   CustomMemoryStorage() {
     /*
+    Also see: https://man7.org/linux/man-pages/man3/alloca.3.html
     buffer = reinterpret_cast<unsigned char*>(
       ::operator new(Size)
     );
