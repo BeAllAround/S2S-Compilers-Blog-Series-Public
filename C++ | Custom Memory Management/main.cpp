@@ -17,6 +17,9 @@
 
 The Rule of Thumb: If your calculated allocation size approaches or exceeds a few hundred kilobytes, abort stack allocation entirely and fall back to heap memory (malloc or new).
 
+For this reason, use macros or alloca - C++ specific as there can be no runtime function evaluation for C at the top level.
+
+
 */
 
 
