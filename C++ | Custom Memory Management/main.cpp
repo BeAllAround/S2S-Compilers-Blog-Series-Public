@@ -321,6 +321,7 @@ int main() {
 
   // std::cout << ((char*)a)[1] << std::endl;
 
+  // Essentially, memset(a, 0, sizeof(((char*)a)) );
   // for(size_t i = 0; i < capacity; i++) {
   //   std::cout << ((char*)a)[i] << std::endl;
        // ((char*)a)[i] = 0;
