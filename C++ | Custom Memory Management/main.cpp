@@ -185,6 +185,7 @@ void benchmark01() {
 
 int main() {
 
+    /*
     // Created for the padding problems
     struct DerivedBlock {
         Derived d;
@@ -192,6 +193,7 @@ int main() {
     };
 
     std::cout << "sizeof(DerivedBlock): " << sizeof(DerivedBlock) << std::endl;
+    */
     std::cout << "sizeof(Derived): " << sizeof(Derived) << std::endl;
     std::cout << "sizeof(Base): " << sizeof(Base) << std::endl;
 
@@ -280,4 +282,66 @@ int main() {
 
     return 0;
 }
+
+/*
+#include <iostream>
+
+#include <memory>
+
+
+#include <cassert>
+
+#define _MAX 1000000
+
+int main() {
+  char c;
+  constexpr size_t capacity = sizeof(int) * _MAX;
+
+  int* a = reinterpret_cast<int*>(
+      ::operator new(capacity)
+  );
+
+  // The only problem with this is filled memory stays occupied if we look at the system monitor/task manager. Otherwise, it is just unused - however - it is allocated if we look at the valgrind report.
+  // for(int i = 0; i < _MAX; i++) {
+  //  a[i] = i;
+  // }
+
+  // std::cout << (a+0) << std::endl;
+  // std::cout << (a+1) << std::endl;
+  // std::cout << (a+2) << std::endl;
+
+  assert( ((char*)(a+1) - (char*)(a+0)) == 4);
+
+  std::cout << ( (char*)(a+1) - (char*)(a+0) ) << std::endl;
+
+  std::cout << "PAUSED_0" << std::endl;
+
+  std::cin >> c;
+
+
+  // std::cout << ((char*)a)[1] << std::endl;
+
+  // for(size_t i = 0; i < capacity; i++) {
+  //   std::cout << ((char*)a)[i] << std::endl;
+       // ((char*)a)[i] = 0;
+  // }
+
+  std::cout << "PAUSED_1" << std::endl;
+  c = 0;
+  std::cin >> c;
+
+
+
+
+  ::operator delete(a);
+
+  std::cout << "PAUSED_2" << std::endl;
+  c = 0;
+  std::cin >> c;
+
+
+  return 0;
+}
+
+*/
 
