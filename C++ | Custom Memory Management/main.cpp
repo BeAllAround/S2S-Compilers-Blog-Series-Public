@@ -4,6 +4,9 @@
 
 
 #include <cassert>
+#include <cstring>
+
+#include <alloca.h>
 
 
 // g++ main.cpp -o out.out -O0 -Wall && valgrind -s --leak-check=full --show-leak-kinds=all ./out.out
@@ -28,15 +31,20 @@ template<size_t Size>
 class CustomMemoryStorage {
   public:
 
-  unsigned char buffer[Size];
+  static constexpr size_t CAPACITY = Size;
+
+  unsigned char buffer[CAPACITY];
   // unsigned char* buffer {nullptr};
 
   size_t current_block_size {0};
 
 
-  CustomMemoryStorage() {
+  CustomMemoryStorage()
+  {
+
+    // NOTE: buffer = (unsigned char*)alloca(Size); // This is NOT POSSIBLE DUE TO THE BROKEN ALLOCA RAII FOR C++. THIS MEMORY IS RESTORED AS SOON AS THE FUNCTION RETURNED. THE DESTRUCTOR CAN'T TAKE CARE OF THIS. THE ONLY WAY TO HAVE ALLOCA WORK IS TO ATTACH THE BUFFER VIA "void attach_buffer(void*)" from the main scope GIVEN THAT THE ALLOCA BUFFER IS RESTORED AT THE END OF THE CURRECT FUNCTION SCOPE. CHECK OUT THE ALLOCA IN THE MAIN BELOW.
+
     /*
-    Also see: https://man7.org/linux/man-pages/man3/alloca.3.html
     buffer = reinterpret_cast<unsigned char*>(
       ::operator new(Size)
     );
@@ -65,7 +73,14 @@ class CustomMemoryStorage {
     block->~T();
   }
 
-  ~CustomMemoryStorage() {
+  void attach_buffer(void* buffer) {
+
+    assert(this->buffer == nullptr); // ONLY ATTACH THE BUFFER IS PREVIOUS IS NULL
+
+    this->buffer = reinterpret_cast<unsigned char*>(buffer);
+  }
+
+  inline ~CustomMemoryStorage() {
     // ::operator delete (buffer);
   }
 
@@ -77,8 +92,9 @@ class Base {
     public:
     int* n {nullptr};
 
-    Base() : n{new int(1)} {
-      // std::cout << "Base()" << std::endl;
+    Base() {
+      n = new int(1);
+      // std::cout << "Base()" << n << "n: " << *n << std::endl;
     }
 
     virtual void print_n() {
@@ -99,6 +115,7 @@ class Derived : public Base {
         int* n1 {nullptr};
 
         Derived() : Base() {
+            std::cout << "Derived()" << std::endl;
             n1 = new int(2);
         }
 
@@ -194,6 +211,10 @@ void benchmark01() {
 
 
 int main() {
+
+    // allocator.attach_buffer(alloca(
+    //  decltype(allocator)::CAPACITY
+    // ));
 
     /*
     // Created for the padding problems
