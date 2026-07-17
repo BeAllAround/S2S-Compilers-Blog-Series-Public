@@ -80,6 +80,15 @@ class CustomMemoryStorage {
     this->buffer = reinterpret_cast<unsigned char*>(buffer);
   }
 
+  // template<class T, class... Args> inline T* custom_new(Args&&...) __attribute__((always_inline));
+
+  template<class T, class... Args>
+  inline T* custom_new(Args&&... args) {
+    void* rawMemory = next_block_available(sizeof(T));
+
+    return new (rawMemory) T(std::forward<Args>(args)...);
+  }
+
   inline ~CustomMemoryStorage() {
     // ::operator delete (buffer);
   }
@@ -162,16 +171,6 @@ class OtherClass {
 static CustomMemoryStorage<1000> allocator;
 
 
-// template<class T, class... Args> inline T* __custom_stack_new(Args&&...) __attribute__((always_inline));
-
-template<class T, class... Args>
-inline T* __custom_stack_new(Args&&... args) {
-    void* rawMemory = allocator.next_block_available(sizeof(T));
-
-    return new (rawMemory) T(std::forward<Args>(args)...);
-}
-
-
 void benchmark01() {
 
 #define __TEST_MAX 4000 // NOTE: FOR BENCHMARKING // MAKE SURE TO MODIFY(INCREASE THE SIZE_T) FOR TESTING
@@ -182,7 +181,7 @@ void benchmark01() {
   std::cout << "START: __CUSTOM_STACK_NEW_TEST" << std::endl;
   for (size_t i = 0; i < __TEST_MAX; i++)
   {
-    Base *b = __custom_stack_new<Derived>();
+    Base *b = allocator.custom_new<Derived>();
     b->print_n();
 
     allocator.destroy(b);
@@ -271,7 +270,7 @@ int main() {
     {
         std::cout << "START: SCOPE 2" << std::endl;
 
-        Base* b = __custom_stack_new<Derived>();
+        Base* b = allocator.custom_new<Derived>();
         b->print_n();
 
         allocator.destroy(b);
@@ -282,7 +281,7 @@ int main() {
     {
         std::cout << "START: SCOPE 3" << std::endl;
 
-        OtherClass* b = __custom_stack_new<OtherClass>();
+        OtherClass* b = allocator.custom_new<OtherClass>();
 
         allocator.destroy(b);
 
@@ -295,7 +294,7 @@ int main() {
         Base* derived_base = nullptr;
 
         for(size_t i = 0; i < 10; i++) {
-            Base* b = __custom_stack_new<Derived>();
+            Base* b = allocator.custom_new<Derived>();
             b->print_n();
 
             allocator.destroy(b);
@@ -315,6 +314,7 @@ int main() {
 }
 
 /*
+
 #include <iostream>
 
 #include <memory>
