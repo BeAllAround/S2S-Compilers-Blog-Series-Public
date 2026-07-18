@@ -38,6 +38,11 @@ class Base {
       n = new int(1);
     }
 
+    void clean_up_heap() {
+      delete n;
+      n = nullptr;
+    }
+
     inline ~Base(); 
 };
 
@@ -72,6 +77,10 @@ class Derived {
             std::cout << "Derived::Base::n " << 
                 *(reinterpret_cast<Base*>(this)->n) << std::endl;
             */
+        }
+
+        void destroy_base() {
+          ubase.base.clean_up_heap();
         }
 
         ~Derived() {
@@ -169,16 +178,19 @@ int main() {
     std::cout << "sizeof(Derived): " << sizeof(Derived) << std::endl;
     std::cout << "sizeof(Base): " << sizeof(Base) << std::endl;
 
-    /*
     {
         Derived derived;
 
         assert(
             reinterpret_cast<uintptr_t>(&derived) == 
             reinterpret_cast<uintptr_t>(&derived.ubase.base)
-        ); // NOTE: Inheritance check for upcasting and downcasting
+        ); // NOTE: Inheritance check for safe upcasting and downcasting
+
+
+        derived.destroy_base(); // This needs to call ~Base() due to the std::vector<int> example but this is GOOD ENOUGH HERE!
+
     }
-    */
+
 
     {
       benchmark01();
