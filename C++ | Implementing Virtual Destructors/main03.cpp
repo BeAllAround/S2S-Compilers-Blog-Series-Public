@@ -64,7 +64,7 @@ class Base {
 
 class Derived {
     public:
-        union UBase {
+        union UBase { // : public Base {}
             Base base;
 
             UBase() {}
@@ -85,7 +85,7 @@ class Derived {
             v.push_back(0);
         }
 
-        void print_n() {
+        void sanity_check() {
 
             assert(n1 != nullptr);
             assert( (reinterpret_cast<Base*>(this)->n) != nullptr );
@@ -169,7 +169,7 @@ void benchmark01() {
 
         */
 
-        ((Derived*)b)->print_n();
+        ((Derived*)b)->sanity_check();
 
         // These two will work for C++11 and newer!
         b->~Base();

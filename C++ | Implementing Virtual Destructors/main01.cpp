@@ -39,7 +39,7 @@ class Derived : public Base {
             n1 = new int(2);
         }
 
-        void print_n() {
+        void sanity_check() {
 
             assert(n1 != nullptr);
             assert(
@@ -80,7 +80,7 @@ void benchmark01() {
     {
       Base *b = new(::operator new(sizeof(Derived))) Derived();
 
-      ((Derived*)b)->print_n();
+      ((Derived*)b)->sanity_check();
 
       b->~Base();
       ::operator delete(b);
