@@ -54,11 +54,14 @@ class Derived {
         } ubase;
 
         int* n1 {nullptr};
+        // std::vector<int> v;
 
         Derived() {
             new(&ubase.base) Base(RuntimeSwitch::DerivedType); // Same as Derived() : Base()
 
             n1 = new int(2);
+
+            // v.push_back(0);
         }
 
         void sanity_check() {
