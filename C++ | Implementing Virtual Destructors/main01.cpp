@@ -6,10 +6,6 @@
 #include <cassert>
 #include <cstring>
 
-#include <alloca.h>
-
-
-// g++ main.cpp -o out.out -O0 -Wall && valgrind -s --leak-check=full --show-leak-kinds=all ./out.out
 
 
 #define start_time clock_t s_t_a_r_t = clock();
