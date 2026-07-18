@@ -169,7 +169,7 @@ void benchmark01() {
 
         */
 
-        // ((Derived*)b)->print_n();
+        ((Derived*)b)->print_n();
 
         // These two will work for C++11 and newer!
         b->~Base();
