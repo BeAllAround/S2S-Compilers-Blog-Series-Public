@@ -178,6 +178,8 @@ int main() {
     {
         std::vector<S*> v1;
 
+
+        // NOTE: Even using a unique_ptr in this case (even with a custom memory allocator) is the "construct + destructor" overhead so using a primitive pointer truly/fully escapes the variable restoration and the C++ RAII. 
         S* s1 = allocator.custom_new<S>(2);
        
         // NOTE: Using the following printf to determine the assembly in-between at deep/great optimization levels such as -O1, -O2, O3.
