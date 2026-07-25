@@ -151,6 +151,28 @@ class S {
 static CustomMemoryStorage<1000> allocator;
 
 
+std::vector<S*> fuzz_test_vector() {
+  std::vector<S*> v;
+
+  // NOTE: Confirming that using a primitive pointer fully escapes the variable (primitive or struct) restoration and the C++ RAII. 
+  // This is due to the fact that, just like the memory on heap - this memory has to point to somewhere else - where it is left untouched by the current scope - global/top level, for example.
+  S* s3 = allocator.custom_new<S>(30);
+
+  v.push_back(
+    allocator.custom_new<S>(10)
+  );
+
+  v.push_back(
+    allocator.custom_new<S>(20)
+  );
+
+
+  v.push_back(s3);
+
+
+  return v;
+}
+
 int main() {
 
 
@@ -179,7 +201,7 @@ int main() {
         std::vector<S*> v1;
 
 
-        // NOTE: Even using a unique_ptr in this case (even with a custom memory allocator) is the "construct + destructor" overhead so using a primitive pointer truly/fully escapes the variable restoration and the C++ RAII. 
+        // NOTE: Even using a unique_ptr in this case (even with a custom memory allocator) is the "unique_ptr() + ~unique_ptr()" RAII overhead so using a primitive pointer fully escapes the variable (primitive or struct) restoration and the C++ RAII. 
         S* s1 = allocator.custom_new<S>(2);
        
         // NOTE: Using the following printf to determine the assembly in-between at deep/great optimization levels such as -O1, -O2, O3.
@@ -199,13 +221,33 @@ int main() {
 
         // delete [] buffer; // s->~S*();
         // Doesnt't ~std::vector() not already do this?
-        defer: // Better assembly than for(size_t i = 0; i < v1.size(); i++) !
-        for(auto start = v1.begin(); start != v1.end(); start++) {
+        defer: { // Better assembly than for(size_t i = 0; i < v1.size(); i++) !
+          for(auto start = v1.begin(); start != v1.end(); start++) {
             // start++;
             (*start)->~S();
+          }
         }
     }
     std::cout << "END: SCOPE 1" << std::endl;
+
+
+    std::cout << "START: SCOPE 2" << std::endl;
+    {
+      std::vector<S*> v = fuzz_test_vector();
+
+      size_t i = 0;
+      assert(*(v[i++]->i_ptr) == 10);
+      assert(*(v[i++]->i_ptr) == 20);
+      assert(*(v[i++]->i_ptr) == 30);
+      
+      _defer: {
+        for(auto start = v.begin(); start != v.end(); start++) {
+          (*start)->~S();
+        }
+      }
+
+    }
+    std::cout << "END: SCOPE 2" << std::endl;
 
    
     return 0;
