@@ -179,14 +179,19 @@ int main() {
         std::vector<S*> v1;
 
         S* s1 = allocator.custom_new<S>(2);
-
+       
+        // NOTE: Using the following printf to determine the assembly in-between at deep/great optimization levels such as -O1, -O2, O3.
+        // printf("s1\n");
         v1.push_back(
             allocator.custom_new<S>(1)
         );
+        // printf("s2\n");
 
+        // printf("s1\n");
         v1.push_back(
             s1
         );
+        // printf("s2\n")
 
         // s1.i = 1;
 
