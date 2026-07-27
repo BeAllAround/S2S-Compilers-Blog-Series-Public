@@ -148,7 +148,7 @@ Just by trying to get around the `move` semantics of C++, as a result - we also 
 
 ## Conclusion and YouTube Video
 
-I AM NOT advising that you prefer doing this for performance reasons. This is rather an experimental overview on how to escape the automatic stack restoration and C++ RAII. However, if your use case is specific enough with many `std::vector` reallocations in your application or other heavy workloads performed by the container buffers, approaching structs/objects in C++ like this just _might_ pay dividends.
+I AM NOT advising that you prefer doing this for performance reasons. This is rather an experimental overview on how to escape the automatic stack restoration and C++ RAII. However, if your use case is specific enough with many `std::vector` reallocations in your application or other heavy workloads performed by the container buffers, approaching structs/objects in C++ like this just _might_ pay off for micro-performance.
 
 
 
