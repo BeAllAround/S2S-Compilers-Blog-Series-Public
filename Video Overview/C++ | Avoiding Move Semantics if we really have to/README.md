@@ -138,7 +138,7 @@ Just by trying to get around the `move` semantics of C++, as a result - we also 
 
 
 
-Last but not least, using a custom memory allocator like this suppresses all compiler optimizations that could have otherwise been done to the variables - for example, storing variables on register for super fast READ/WRITE is _**NOT**_ an optimization compiler can do in this case. 
+Last but not least, using a custom memory allocator, which fetches and "reserves" a piece of memory to be used, suppresses all compiler optimizations that could have otherwise been done to the variables - for example, storing variables on register for super fast READ/WRITE is _**NOT**_ an optimization compiler can do in this case. 
 
 
 
@@ -157,4 +157,8 @@ I AM **NOT** advising that you prefer doing this for general code **IN ANY SHAPE
 
 
 Keep in mind that this is just a brief overview of the YouTube video! For the full experience with all the details we missed here, check out my [YouTube channel](https://www.youtube.com/@AlexMilenkovic-ks7xd) and [C++ | Avoiding Move Semantics if we really have to](https://www.youtube.com/watch?v=Mr4BtsyGzkU).
+
+
+
+For the source code of this overview and the video, check out my GitHub repository at https://github.com/BeAllAround/S2S-Compilers-Blog-Series-Public.
 
