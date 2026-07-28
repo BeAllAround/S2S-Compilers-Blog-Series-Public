@@ -14,7 +14,7 @@
 
 ## C++ | Avoiding Move Semantics
 
-For the video breakdown of this week, let's go with [C++ | Avoiding Move Semantics if we really have to](https://www.youtube.com/watch?v=Mr4BtsyGzkU) and determine how expensive the move operation is on the assembly level - whether that is the move constructor or assignment.
+For the video overview of this week, let's go with [C++ | Avoiding Move Semantics if we really have to](https://www.youtube.com/watch?v=Mr4BtsyGzkU) and determine how expensive the move operation is on the assembly level - whether that is the move constructor or assignment.
 
 
 
@@ -138,6 +138,10 @@ Just by trying to get around the `move` semantics of C++, as a result - we also 
 
 
 
+Last but not least, using a custom memory allocator like this suppresses all compiler optimizations that could have otherwise been done to the variables - for example, storing variables on register for super fast READ/WRITE is _**NOT**_ an optimization compiler can do in this case. 
+
+
+
 > 📘 Why not use `std::unique_ptr` with the custom allocator that operates on stack?
 >
 > It is important to note that using a `std::unique_ptr` in this case (even with a custom memory allocator) is the `std::unique_ptr() + ~std::unique_ptr()` RAII overhead.
@@ -152,5 +156,5 @@ I AM **NOT** advising that you prefer doing this for general code **IN ANY SHAPE
 
 
 
-Keep in mind that this is just a breakdown of the YouTube video! For the full experience with all the details we missed here, check out my [YouTube channel](https://www.youtube.com/@AlexMilenkovic-ks7xd) and [C++ | Avoiding Move Semantics if we really have to](https://www.youtube.com/watch?v=Mr4BtsyGzkU).
+Keep in mind that this is just a brief overview of the YouTube video! For the full experience with all the details we missed here, check out my [YouTube channel](https://www.youtube.com/@AlexMilenkovic-ks7xd) and [C++ | Avoiding Move Semantics if we really have to](https://www.youtube.com/watch?v=Mr4BtsyGzkU).
 
