@@ -1,6 +1,6 @@
 
 
-# C++ Optimizing Move Until We Cannot
+# C++ | Optimizing Move Until We Cannot
 
 
 
@@ -11,7 +11,7 @@
 
 
 
-## C++ Optimizing Move Until We Cannot
+## C++ | Optimizing Move Until We Cannot
 
 For the video overview of this week, let's go with [C++ Optimizing Move and Destructor Semantics](https://youtu.be/mBO-YWfFJWQ) and optimize the C++ move semantics until it is not possible to optimize any more.
 
