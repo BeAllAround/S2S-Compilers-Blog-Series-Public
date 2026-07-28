@@ -138,7 +138,7 @@ Just by trying to get around the `move` semantics of C++, as a result - we also 
 
 
 
-Last but not least, using a custom memory allocator, which fetches and "reserves" a piece of memory to be used, suppresses all compiler optimizations that could have otherwise been done to the variables - for example, storing variables on register for super fast READ/WRITE is _**NOT**_ an optimization compiler can do in this case. 
+Last but not least, using a custom memory allocator like this, which fetches and "reserves" a piece of memory to be used, suppresses all compiler optimizations that could have otherwise been done to the variables - for example, storing variables on register for super fast READ/WRITE is _**NOT**_ an optimization compiler can do in this case. 
 
 
 
