@@ -98,9 +98,47 @@ S(S&&) // OVERHEAD! Move involved in order to "move" the entity into the destina
 ~S()   // OK! Destructor invoked by the "~StaticStorage()"
 ```
 
+With the following code, we are able to evaluate the lifespan of the "hanging" `prvalue` and prove that its lifetime ends at the end of the expression: the semi colon.
+
+```cpp
+{
+  std::cout << "START" << std::endl;
+  S(1);
+  // Implicit ~S() invoked here
+  std::cout << "END" << std::endl;
+    
+    
+  std::cout << "START" << std::endl;
+  S(3);
+  // Implicit ~S() invoked here
+  std::cout << "END" << std::endl;
+  
+  std::cout << "START" << std::endl;
+  make_s(10, 3); // S make_s(int, int);
+  // Implicit ~S() invoked here
+  std::cout << "END" << std::endl;
+
+}
+// Outputs
+/*
+START
+S(int)
+~S()
+END
+START
+S(int)
+~S()
+END
+START
+S(int)
+~S()
+END
+*/
+```
 
 
-The first thing to do here is not to have a function at all _since_ the function in C++ needs additional work like `std::move` to cast it back to the original type given that:
+
+Nevertheless, the first thing to do here is not to have a function at all _since_ the function in C++ needs additional work like `std::move` to cast it back to the original type given that:
 
 ```cpp
 void add(T&& item) {
