@@ -226,6 +226,24 @@ This is because if the function return type in C++ is **non-reference type (by v
 new(&storage.buffer[storage.stack_count]) S(/* Determined at runtime by make_s */);
 ```
 
+This behavior is identical to the following:
+
+```cpp
+struct S {
+    S(int x) { /* ... */ }
+    
+    // Testing it with copy and move deleted:
+    S(const S&) = delete;
+    S(S&&) = delete;
+};
+
+S s = make_s( ... ); // C++17+ Guaranteed Copy Elision. No copy or move. 
+// Similar to
+S s = S(1); // Direct Construction. Guaranteed no copy or move since C++17.
+```
+
+
+
 With that being our final optimization, we have reached the breaking point and the hard stop, thusly, we are not able to optimize it _any further_!
 
 
