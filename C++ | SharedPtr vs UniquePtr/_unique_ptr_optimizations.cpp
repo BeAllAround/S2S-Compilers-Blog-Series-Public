@@ -67,7 +67,7 @@ int main() {
 
 
 
-    printf("%p\n", p1.get()); // thsi variable is treated as "S* p1 = nullptr" at -O3 optimizations so there are the two ~unique_ptr(). Compare to -O0 levels
+    printf("%p\n", p1.get()); // This variable (p1 + p1.get() once inlined) is treated as "S* p1 = nullptr" at -O3 optimizations so there are the two ~unique_ptr() handlers. NOTE: Compare to -O0 levels
 
 
     
