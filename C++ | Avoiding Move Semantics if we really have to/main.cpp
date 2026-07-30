@@ -109,7 +109,9 @@ class S {
     i_ptr = new int(*other.i_ptr);
   }
 
-  S(S&& other) {
+  // NOTE: std::vector will invoke the copy constructor during reallocation, but only if the element's move constructor is not marked noexcept
+  S(S&& other) noexcept
+  {
     std::cout << "S(S&&)" << std::endl;
     i_ptr = other.i_ptr;
     other.i_ptr = nullptr;
