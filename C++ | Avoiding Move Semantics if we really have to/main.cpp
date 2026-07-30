@@ -10,6 +10,10 @@
 
 
 
+// g++ -O3 -S -fno-verbose-asm  -fdiagnostics-color=always -masm=intel main.cpp -o - | asm-parser -directives -comment_only -unused_labels -stdin -outputtext -plt -library_code > output.s
+// NOTE: "-g" slows it down significantly
+// g++ -O3 -S -fno-verbose-asm  -fdiagnostics-color=always -masm=intel main.cpp -g -o - | asm-parser -directives -comment_only -unused_labels -stdin -outputtext -plt -library_code > output.s
+
 // g++ main.cpp -o out.out -O0 -Wall && valgrind -s --leak-check=full --show-leak-kinds=all ./out.out
 
 
