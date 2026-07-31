@@ -288,7 +288,7 @@ With that being our final optimization, we have reached the breaking point and t
 
 ## Conclusion and YouTube Video
 
-Just like with every other video and overview of mine, you should apply these "black-magic" optimizations only under specific circumstances and for particular use cases that truly require such aggressive optimization techniques — not in your general code. That said, studying them can still sharpen your understanding of C++.
+Just like with every other video and overview of mine, you should apply these "black-magic" optimizations only under specific circumstances and for particular use cases that truly require such aggressive optimization techniques (JIT, or bytecode interpreters written in C++) — not in your general code. That said, studying them can still sharpen your understanding of C++.
 
 Keep in mind that this is just a brief overview of the YouTube video! For the full experience with all the details we missed here, check out my [YouTube channel](https://www.youtube.com/@AlexMilenkovic-ks7xd) and [C++ Optimizing Move and Destructor Semantics](https://youtu.be/mBO-YWfFJWQ).
 
