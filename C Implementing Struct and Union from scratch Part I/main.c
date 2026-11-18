@@ -71,7 +71,18 @@ pointer = 8 bytes
 struct will likely be 16 bytes, not 4 + 8 + 4 = 16 by coincidence, but because of alignment
 On another system, this could be different
       */
-    unsigned char object[sizeof(int) + sizeof(const char*) + 4]; // sizeof members in order plus the padding, which I have no clue how to calculate at the moment.
+
+    struct Obj1 {
+      int i;
+      const char* str;
+    };
+
+    printf("sizeof(Obj1): %ld\n", sizeof(struct Obj1));
+    assert(sizeof(int) + sizeof(const char*) + 4 == sizeof(struct Obj1));
+
+    size_t padding = 4; // => sizeof(struct Obj1) - (sizeof(int) + sizeof(const char*))
+
+    unsigned char object[sizeof(int) + sizeof(const char*) + padding]; // sizeof members in order plus the padding, which I have no clue how to calculate at the moment.
 
     /*
        typeof(typeof(int)*) a; // int*
@@ -91,7 +102,7 @@ On another system, this could be different
     assert(*((int*)object+0) == ii);
 
     // obj.str = "AAB";
-    *((const char**)(object+sizeof(int))) = "AAB";
+    *((const char**)(object+sizeof(int)+padding)) = "AAB";
     /*
         mov     DWORD PTR [rbp-8], 132
         lea     rax, [rbp-32]
@@ -102,13 +113,23 @@ On another system, this could be different
         mov     QWORD PTR [rax], OFFSET FLAT:.LC3 # obj.str = "AAB"
      */
 
-    printf("object.str %s\n", *((const char**)(object+sizeof(int))) );
+    printf("object.str %s\n", *((const char**)(object+sizeof(int)+padding)) );
 
     // assert(*((const char**)object+0) == "AAB"); // warning: comparison with string literal results in unspecified behavior [-Waddress]
-    assert(strcmp(*((const char**)(object+sizeof(int))), "AAB") == 0); // warning: comparison with string literal results in unspecified behavior [-Waddress]
+    assert(strcmp(*((const char**)(object+sizeof(int)+padding)), "AAB") == 0); // warning: comparison with string literal results in unspecified behavior [-Waddress]
 
     printf("object.i %d\n", *((int*)(object+0)) );
     assert(*((int*)object+0) == ii);
+
+    // OK: Direct cast to Obj1
+    struct Obj1* obj1 = (struct Obj1*)object;
+
+    printf("obj->i %d\n", obj1->i);
+    assert(obj1->i == ii);
+    printf("obj->str %s\n", obj1->str);
+    assert(strcmp(obj1->str, "AAB") == 0); // warning: comparison with string literal results in unspecified behavior [-Waddress]
+
+
 
     // printf("a %d\n", *a );
   }
