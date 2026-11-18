@@ -122,6 +122,7 @@ On another system, this could be different
     assert(*((int*)object+0) == ii);
 
     // OK: Direct cast to Obj1
+    // Sanity Check if the member/attribute padding is precise.
     struct Obj1* obj1 = (struct Obj1*)object;
 
     printf("obj->i %d\n", obj1->i);
