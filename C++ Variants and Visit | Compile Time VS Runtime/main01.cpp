@@ -39,6 +39,7 @@ void print(auto arg) {
 
 // See: https://en.cppreference.com/cpp/utility/variant/get
 // See: https://en.cppreference.com/cpp/utility/variant/visit2
+// See: https://en.cppreference.com/cpp/utility/variant/operator%3D
 // These two are powerful since they are constexpr-first functions with the runtime fallback. Since it an constexpr function cannot be executed at compile time, the runtime alternative is applied.
 
 int main()
