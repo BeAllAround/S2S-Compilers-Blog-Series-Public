@@ -37,6 +37,10 @@ void print(auto arg) {
 
 // NOTE and COVER: -O1 vs -O3
 
+// See: https://en.cppreference.com/cpp/utility/variant/get
+// See: https://en.cppreference.com/cpp/utility/variant/visit2
+// These two are powerful since they are constexpr-first functions with the runtime fallback. Since it an constexpr function cannot be executed at compile time, the runtime alternative is applied.
+
 int main()
 {
 
